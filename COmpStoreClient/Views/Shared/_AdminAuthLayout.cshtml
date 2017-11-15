@@ -1,0 +1,27 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/images/favicon.ico" />
+    <title>@ViewData["Title"] - Quản trị COmpStore</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/admin_theme/dist/css/sb-admin-2.min.css" />
+        <link rel="stylesheet" href="~/css/admin_site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/admin_theme/dist/css/sb-admin-2.min.css" />
+        <link rel="stylesheet" href="~/css/admin_site.css" />
+    </environment>
+    @Html.Raw(JavaScriptSnippet.FullScript)
+</head>
+<body>
+
+    @RenderBody()
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+﻿@using COmpStore.Models.ViewModels.Paging
+@using COmpStore.Models.ViewModels.ProductAdmin
+@model PageOutput<ProductAdminIndex>
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Sản phẩm</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="form-group">
+                    <a asp-action="Create" asp-controller="AdminProduct" id="add_btn" class="btn btn-primary btn-sm">Thêm</a>
+                    <a id="btn_delete" class="btn btn-danger btn-sm disabled">Xóa</a>
+                    <a id="btn_uncheck" class="btn btn-default btn-sm pull-right" style="display:none">Bỏ chọn</a>
+                </div>
+                <div class="table-responsive">
+                    <table id="content_table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Hình ảnh</th>
+                                <th>Tồn kho</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.Items)
+                            {
+                            <tr data-id="@product.Id">
+                                <td>@product.Id</td>
+                                <td><strong>@product.Name</strong></td>
+                                <td class="text-center">
+                                    <img class="admin-product-item product-img" src="http://localhost:40001/images/@product.ProductImage" />
+                                </td>
+                                <td>@product.UnitsInStock</td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-controller="AdminProduct" asp-route-id="@product.Id" class="text-primary" title="Chi tiết">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                    </a>
+                                    <a asp-action="Update" asp-controller="AdminProduct" asp-route-id="@product.Id" class="text-primary" title="Chỉnh sửa">
+                                        &nbsp;<span class="glyphicon glyphicon-edit"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 ">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <a class="btn btn-default" href="/AdminProduct/Index?pageNumber=@(Model.PageNumber-1)">Previous</a>
+                            }
+                            @if (Model.PageNumber < Model.TotalPage)
+                            {
+                                <a class="btn btn-primary pull-right" href="/AdminProduct/Index?pageNumber=@(Model.PageNumber+1)">Next</a>
+                            }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+@section Scripts{
+    <script src="~/js/admin_product.js"></script>
+}

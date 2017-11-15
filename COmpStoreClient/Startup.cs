@@ -12,6 +12,8 @@ using COmpStoreClient.WebServiceAccess;
 using COmpStoreClient.WebServiceAccess.Base;
 using COmpStoreClient.Authentication;
 using COmpStoreClient.Filters;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Net;
 
 namespace COmpStoreClient
 {
@@ -32,6 +34,7 @@ namespace COmpStoreClient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSession();
             services.AddSingleton(_ => Configuration);
             services.AddSingleton<IWebServiceLocator, WebServiceLocator>();
             services.AddSingleton<IWebApiCalls, WebApiCalls>();
@@ -54,19 +57,38 @@ namespace COmpStoreClient
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                app.UseExceptionHandler(configure =>
+                {
+                    configure.Run(async context =>
+                    {
+                        var ex = context.Features
+                                        .Get<IExceptionHandlerFeature>()
+                                        .Error;
+                        var a = ex.GetType();
+                        if (ex.GetType() == typeof(WebException))
+                        {
+                            context.Response.Redirect("Admin/Login");
+                        }
+                        else
+                        {
+                            context.Response.Redirect("Admin/Error");
+                        }
+
+                    });
+                });
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseSession();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Products}/{action=Index}/{id?}");
+                    template: "{controller=Admin}/{action=Index}/{id?}");
             });
         }
     }

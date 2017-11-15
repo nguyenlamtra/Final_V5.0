@@ -19,6 +19,11 @@ namespace COmpStore.Models.Entities
         [Required]
         [DataType(DataType.Password), MaxLength(50)]
         public string Password { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+
+
         [InverseProperty(nameof(Order.Customer))]
         public List<Order> Orders { get; set; } = new List<Order>();
         [InverseProperty(nameof(ShoppingCartRecord.Customer))]

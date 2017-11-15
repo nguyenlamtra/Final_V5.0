@@ -107,20 +107,20 @@ namespace COmpStore.DAL.Repos.Base
                 //A concurrency error occurred
                 //Should handle intelligently
                 Console.WriteLine(ex);
-                throw;
+                throw(new Exception(ex.ToString()));
             }
             catch (RetryLimitExceededException ex)
             {
                 //DbResiliency retry limit exceeded
                 //Should handle intelligently
                 Console.WriteLine(ex);
-                throw;
+                throw (new Exception(ex.ToString()));
             }
             catch (Exception ex)
             {
                 //Should handle intelligently
                 Console.WriteLine(ex);
-                throw;
+                throw (new Exception(ex.ToString()));
                 //-2146232060
                 //throw new Exception($"{ex.HResult}");
             }

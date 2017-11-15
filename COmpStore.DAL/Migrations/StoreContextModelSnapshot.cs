@@ -53,6 +53,9 @@ namespace COmpStore.DAL.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<string>("Role")
+                        .IsRequired();
+
                     b.Property<byte[]>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();

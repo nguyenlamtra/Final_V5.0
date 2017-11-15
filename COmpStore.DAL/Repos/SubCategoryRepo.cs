@@ -3,6 +3,8 @@ using COmpStore.DAL.Repos.Base;
 using COmpStore.DAL.Repos.Interfaces;
 using COmpStore.Models.Entities;
 using COmpStore.Models.ViewModels.Base;
+using COmpStore.Models.ViewModels.ProductAdmin;
+using COmpStore.Models.ViewModels.SubCategoryAdmin;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -65,6 +67,39 @@ namespace COmpStore.DAL.Repos
                 .Include(p => p.Category)
                 .Select(item => GetRecord(item, item.Category))
                 .OrderBy(x => x.SubCategoryName);
+        //======================================================================================
 
+        public IEnumerable<SubCategoryAdminIndex> GetSubCategoryAdminIndex()
+        => Table.Select(s => new SubCategoryAdminIndex
+        {
+            Id = s.Id,
+            Name = s.SubCategoryName,
+            SumProducts = s.Products.Count
+        });
+
+        internal IEnumerable<ProductRelate> GetProRecord(IEnumerable<Product> pro)
+           => pro.Select(p => new ProductRelate()
+           {
+               ProductName = p.ProductName,
+               Id = p.Id,
+               UnitsInStock = p.UnitsInStock
+           });
+
+        public SubCategoryAdminDetails GetSubCategoryAdminDetails(int id)
+        => Table.Select(s => new SubCategoryAdminDetails
+        {
+            Id = s.Id,
+            CategoryName = s.Category.CategoryName,
+            Name = s.SubCategoryName,
+            Products = GetProRecord(s.Products)
+        }).SingleOrDefault(x => x.Id == id);
+
+        public IEnumerable<SubCategoryCombobox> GetSubCategoryCombobox() => Table.Select(s => new SubCategoryCombobox
+        {
+            Id = s.Id,
+            Name = s.SubCategoryName
+        });
+
+        //=======================================================================================
     }
 }

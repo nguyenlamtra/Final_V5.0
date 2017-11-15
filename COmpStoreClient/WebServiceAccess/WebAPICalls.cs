@@ -2,6 +2,12 @@
 using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels;
 using COmpStore.Models.ViewModels.Base;
+using COmpStore.Models.ViewModels.CategoryAdmin;
+using COmpStore.Models.ViewModels.Customer;
+using COmpStore.Models.ViewModels.Paging;
+using COmpStore.Models.ViewModels.ProductAdmin;
+using COmpStore.Models.ViewModels.PublisherAdmin;
+using COmpStore.Models.ViewModels.SubCategoryAdmin;
 using COmpStoreClient.Configuration;
 using COmpStoreClient.WebServiceAccess.Base;
 using Newtonsoft.Json;
@@ -167,5 +173,217 @@ namespace COmpStoreClient.WebServiceAccess
             return await GetItemListAsync<ProductAndSubCategoryBase>(uri);
         }
 
+        //================================================================================================
+
+        public async Task<IList<CategoryAdminIndex>> GetAdminCategoryIndex()
+        {
+            //Get All Category: 
+
+            var uri = $"{ServiceAddress}api/category/admin";
+            return await GetItemListAsync<CategoryAdminIndex>(uri);
+        }
+
+        public async Task<string> CreateCategory(CategoryAdminCreate model)
+        {
+            // Create category http://localhost:40001/api/category/admin
+            var uri = $"{ServiceAddress}api/category/admin";
+
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> UpdateCategory(CategoryAdminUpdate model)
+        {
+            // Update category http://localhost:40001/api/category/admin
+            var uri = $"{ServiceAddress}api/category/admin";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> DeleteCategory(int id)
+        {
+            // Delete category http://localhost:40001/api/category/admin/{id}
+            var uri = $"{ServiceAddress}api/category/admin/{id}";
+            return await SubmitDeleteRequestAsync(uri);
+        }
+
+        public async Task<CategoryAdminDetails> DetailsCategory(int id)
+        {
+            // details category http://localhost:40001/api/category/admin/{id}
+            var uri = $"{ServiceAddress}api/category/admin/{id}";
+            return await GetItemAsync<CategoryAdminDetails>(uri);
+        }
+
+        public async Task<CategoryAdminUpdate> GetSingleCategory(int id)
+        {
+            // get single category http://localhost:40001/api/category/admin/update/{id}
+            var uri = $"{ServiceAddress}api/category/admin/{id}";
+            return await GetItemAsync<CategoryAdminUpdate>(uri);
+        }
+
+        public async Task<IList<PublisherAdminIndex>> GetAdminPublisherIndex()
+        {
+            //Get All publisher: 
+
+            var uri = $"{ServiceAddress}api/publisher/admin";
+            return await GetItemListAsync<PublisherAdminIndex>(uri);
+        }
+
+        public async Task<string> CreatePublisher(PublisherAdminCreate model)
+        {
+            // Create publisher http://localhost:40001/api/publisher/admin
+            var uri = $"{ServiceAddress}api/publisher/admin";
+
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> UpdatePublisher(PublisherAdminUpdate model)
+        {
+            // Update publisher http://localhost:40001/api/publisher/admin
+            var uri = $"{ServiceAddress}api/publisher/admin";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> DeletePublisher(int id)
+        {
+            // Delete publisher http://localhost:40001/api/publisher/admin/{id}
+            var uri = $"{ServiceAddress}api/publisher/admin/{id}";
+            return await SubmitDeleteRequestAsync(uri);
+        }
+
+        public async Task<PublisherAdminDetails> DetailsPublisher(int id)
+        {
+            // details publisher http://localhost:40001/api/publisher/admin/{id}
+            var uri = $"{ServiceAddress}api/publisher/admin/{id}";
+            return await GetItemAsync<PublisherAdminDetails>(uri);
+        }
+
+        public async Task<PublisherAdminUpdate> GetSinglePublisher(int id)
+        {
+            // get single publisher http://localhost:40001/api/publisher/admin/update/{id}
+            var uri = $"{ServiceAddress}api/publisher/admin/{id}";
+            return await GetItemAsync<PublisherAdminUpdate>(uri);
+        }
+
+        public async Task<IList<SubCategoryAdminIndex>> GetAdminSubCategoryIndex()
+        {
+            //Get All subcategory: 
+
+            var uri = $"{ServiceAddress}api/subcategory/admin";
+            return await GetItemListAsync<SubCategoryAdminIndex>(uri);
+        }
+
+        public async Task<string> CreateSubCategory(SubCategoryAdminCreate model)
+        {
+            // Create subcategory http://localhost:40001/api/subcategory/admin
+            var uri = $"{ServiceAddress}api/subcategory/admin";
+
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> UpdateSubCategory(SubCategoryAdminUpdate model)
+        {
+            // Update subcategory http://localhost:40001/api/subcategory/admin
+            var uri = $"{ServiceAddress}api/subcategory/admin";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> DeleteSubCategory(int id)
+        {
+            // Delete subcategory http://localhost:40001/api/subcategory/admin/{id}
+            var uri = $"{ServiceAddress}api/subcategory/admin/{id}";
+            return await SubmitDeleteRequestAsync(uri);
+        }
+
+        public async Task<SubCategoryAdminDetails> DetailsSubCategory(int id)
+        {
+            // details subcategory http://localhost:40001/api/subcategory/admin/{id}
+            var uri = $"{ServiceAddress}api/subcategory/admin/{id}";
+            return await GetItemAsync<SubCategoryAdminDetails>(uri);
+        }
+
+        public async Task<SubCategoryAdminUpdate> GetSingleSubCategory(int id)
+        {
+            // get single subcategory http://localhost:40001/api/subcategory/admin/update/{id}
+            var uri = $"{ServiceAddress}api/subcategory/admin/{id}";
+            return await GetItemAsync<SubCategoryAdminUpdate>(uri);
+        }
+
+        //public async Task<IList<ProductAdminIndex>> GetAdminProductIndex()
+        //{
+        //    //Get All product: 
+
+        //    var uri = $"{ServiceAddress}api/product/admin";
+        //    return await GetItemListAsync<ProductAdminIndex>(uri);
+        //}
+
+        public async Task<PageOutput<ProductAdminIndex>> GetAdminProductIndex(int pageNumber = 1)
+        {
+            //Get All product: 
+
+            var uri = $"{ServiceAddress}api/product/admin?pageNumber={pageNumber}";
+            return await GetItemAsync<PageOutput<ProductAdminIndex>>(uri);
+        }
+
+        public async Task<string> CreateProduct(ProductAdminCreate model)
+        {
+            // Create product http://localhost:40001/api/product/admin
+            var uri = $"{ServiceAddress}api/product/admin";
+
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> UpdateProduct(ProductAdminUpdate model)
+        {
+            // Update product http://localhost:40001/api/product/admin
+            var uri = $"{ServiceAddress}api/product/admin";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> DeleteProduct(int id)
+        {
+            // Delete product http://localhost:40001/api/product/admin/{id}
+            var uri = $"{ServiceAddress}api/product/admin/{id}";
+            return await SubmitDeleteRequestAsync(uri);
+        }
+
+        public async Task<ProductAdminUpdate> GetSingleProduct(int id)
+        {
+            // get single product http://localhost:40001/api/product/admin/update/{id}
+            var uri = $"{ServiceAddress}api/product/admin/update/{id}";
+            return await GetItemAsync<ProductAdminUpdate>(uri);
+        }
+
+        public async Task<IList<PublisherCombobox>> GetPublisherForCombobox()
+        {
+            // get list publisher http://localhost:40001/api/publisher/admin/combobox
+            var uri = $"{ServiceAddress}api/publisher/admin/combobox";
+            return await GetItemListAsync<PublisherCombobox>(uri);
+        }
+
+        public async Task<IList<SubCategoryCombobox>> GetSubCategoryForCombobox()
+        {
+            // get list subcategory http://localhost:40001/api/subcategory/admin/combobox
+            var uri = $"{ServiceAddress}api/subcategory/admin/combobox";
+            return await GetItemListAsync<SubCategoryCombobox>(uri);
+        }
+
+        public async Task<SessionAuth> VerifyAccount(CustomerLogin model)
+        {
+            var uri = $"{ServiceAddress}api/auth/login";
+            var json = await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+            return JsonConvert.DeserializeObject<SessionAuth>(json);
+        }
+
+        public async Task<string> CheckPermission(string token)
+        {
+            var uri = $"{ServiceAddress}api/auth/checkpermission";
+            return await SubmitPostRequestAsync(uri, null);
+        }
+
+        public void SetToken(string token)
+        {
+            this.Token = token;
+        }
+
+        //===========================================================================================================
     }
 }

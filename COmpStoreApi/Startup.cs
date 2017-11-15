@@ -16,7 +16,9 @@ using Microsoft.EntityFrameworkCore;
 using COmpStore.DAL.Repos;
 using COmpStore.DAL.EF;
 using COmpStore.DAL.Repos.Interfaces;
-
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
 
 namespace COmpStoreApi
 {
@@ -39,6 +41,7 @@ namespace COmpStoreApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
             // Add framework services.
             //services.AddMvcCore();
             services.AddMvcCore(config =>
@@ -60,6 +63,37 @@ namespace COmpStoreApi
             //NOTE: Did not disable mixed mode running here
             services.AddDbContext<StoreContext>(options => options.UseSqlServer(
                                                     Configuration.GetConnectionString("StoreComp")));
+
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            })
+            .AddJwtBearer("JwtBearer", jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("a secret that needs to be at least 16 characters long")),
+
+                    ValidateIssuer = true,
+                    ValidIssuer = "your app",
+
+                    ValidateAudience = true,
+                    ValidAudience = "the client of your app",
+
+                    ValidateLifetime = true, //validate the expiration and not before values in the token
+
+                    ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                                  policy.RequireClaim(ClaimTypes.Role, "Admin"));
+                options.AddPolicy("User", policy =>
+                                  policy.RequireClaim(ClaimTypes.Role, "User"));
+            });
 
             services.AddScoped<ICategoryRepo,CategoryRepo>();
             services.AddScoped<ISubCategoryRepo,SubCategoryRepo>();
@@ -87,8 +121,10 @@ namespace COmpStoreApi
             //        StoreDataInitializer.InitializeData(app.ApplicationServices);
             //    }
             //}
+            app.UseAuthentication();
             app.UseCors("AllowAll");  // has to go before UseMvc
-            app.UseStaticFiles();            app.UseMvc();
+            app.UseStaticFiles();
+            app.UseMvc();
         }
     }
 }

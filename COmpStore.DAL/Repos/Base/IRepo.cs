@@ -1,4 +1,5 @@
 ﻿using COmpStore.Models.Entities.Base;
+using COmpStore.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;

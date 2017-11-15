@@ -8,5 +8,6 @@ namespace COmpStore.DAL.Repos.Interfaces
 {
     public interface ICustomerRepo : IRepo<Customer>
     {
+        Customer GetCustomerByEmail(string email);
     }
 }

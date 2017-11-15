@@ -4,6 +4,8 @@ using COmpStore.DAL.Repos.Interfaces;
 using COmpStore.Models.Entities;
 using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.Base;
+using COmpStore.Models.ViewModels.Paging;
+using COmpStore.Models.ViewModels.ProductAdmin;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -113,5 +115,40 @@ namespace COmpStore.DAL.Repos
                 .Include(p =>p.SubCategory)
                 .Select(item => GetRecordSub(item, item.SubCategory))
                 .OrderBy(x => x.ProductName);
+
+        //======================================================================================================
+        public IEnumerable<ProductAdminIndex> GetProductAdminIndex1()
+            => Table.Select(x => new ProductAdminIndex
+            {
+                Id = x.Id,
+                ProductImage = x.ProductImage,
+                Name = x.ProductName,
+                UnitsInStock = x.UnitsInStock
+            });
+        public string GetImageProduct(int id)
+            => Table.SingleOrDefault(p => p.Id == id).ProductImage;
+
+        public int UpdateExceptImage(Product product, bool persist = true)
+        {
+            Db.Products.Attach(product);
+            Db.Entry(product).State = EntityState.Modified;
+            Db.Entry(product).Property(x => x.ProductImage).IsModified = false;
+            return persist ? SaveChanges() : 0;
+        }
+
+        public PageOutput<ProductAdminIndex> GetProductAdminIndex(int pageNumber = 1, int pageSize = 2)
+            => new PageOutput<ProductAdminIndex>
+            {
+                TotalPage = (Table.Count() % pageSize == 0) ? (Table.Count() / pageSize) : (Table.Count() / pageSize + 1),
+                PageNumber = pageNumber,
+                Items = Table.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(p => new ProductAdminIndex
+                {
+                    Id = p.Id,
+                    Name = p.ProductName,
+                    ProductImage = p.ProductImage,
+                    UnitsInStock = p.UnitsInStock
+                }).ToList()
+            };
+        //======================================================================================================
     }
 }

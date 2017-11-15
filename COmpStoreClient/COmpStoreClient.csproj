@@ -31,6 +31,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\AdminCategory\Create.cshtml" />
+    <None Include="Views\AdminCategory\Details.cshtml" />
+    <None Include="Views\AdminCategory\Index.cshtml" />
+    <None Include="Views\AdminCategory\Update.cshtml" />
+    <None Include="Views\AdminProduct\Create.cshtml" />
+    <None Include="Views\AdminProduct\Details.cshtml" />
+    <None Include="Views\AdminProduct\Index.cshtml" />
+    <None Include="Views\AdminProduct\Update.cshtml" />
+    <None Include="Views\AdminPublisher\Create.cshtml" />
+    <None Include="Views\AdminPublisher\Details.cshtml" />
+    <None Include="Views\AdminPublisher\Index.cshtml" />
+    <None Include="Views\AdminPublisher\Update.cshtml" />
+    <None Include="Views\AdminSubCategory\Create.cshtml" />
+    <None Include="Views\AdminSubCategory\Details.cshtml" />
+    <None Include="Views\AdminSubCategory\Update.cshtml" />
+    <None Include="Views\Admin\Error.cshtml" />
+    <None Include="Views\Admin\Index.cshtml" />
+    <None Include="Views\Admin\Login.cshtml" />
     <None Include="wwwroot\images\banner1.svg" />
     <None Include="wwwroot\images\banner2.svg" />
     <None Include="wwwroot\images\banner3.svg" />

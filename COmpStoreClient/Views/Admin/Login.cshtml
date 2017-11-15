@@ -1,0 +1,43 @@
+﻿@using COmpStore.Models.ViewModels.Customer
+@model CustomerLogin
+@{
+    ViewData["Title"] = "Đăng nhập quản trị viên";
+    Layout = "~/Views/Shared/_AdminAuthLayout.cshtml";
+}
+
+<style>
+    body {
+        background: #d2d6de;
+    }
+</style>
+
+<div class="admin-login-container">
+    <div class="login-box">
+        <div class="login-logo">
+            <span><b>Admin</b> COmpStore</span>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body" style="">
+
+            <form asp-route-returnurl="@ViewData["ReturnUrl"]" asp-action="Login" asp-controller="Admin" method="post">
+                <div class="form-group">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                </div>
+                <div class="form-group">
+                    <input asp-for="EmailAddress" type="email" class="form-control" placeholder="Email">
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary pull-right">Đăng nhập</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+</div>
