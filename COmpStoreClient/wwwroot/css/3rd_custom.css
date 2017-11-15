@@ -1,0 +1,13 @@
+﻿/*Semantic UI*/
+.ui.menu .item:before {
+    width: 0;
+}
+
+.ui.card{
+    width:100%;
+}
+
+/*bxSlider*/
+.bx-wrapper{
+    border:0;
+}

@@ -1,0 +1,253 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Quicksand');
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color: rgb(241,241,241);
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Set default font */
+.ui.button,
+.ui.cards > .card > .content > .header, .ui.card > .content > .header,
+.ui.header,
+.ui.menu,
+.ui.input input,
+.ui.accordion .title,
+.ui.accordion .title:not(.ui), .ui.message .header {
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set widths on the form inputs since otherwise they're 100% wide */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+.hidden.menu {
+    display: none;
+}
+
+.masthead.segment {
+    /*min-height: 700px;*/
+    padding: 1em 0em;
+}
+
+.masthead .logo.item img {
+    margin-right: 1em;
+}
+
+.masthead .ui.menu .ui.button {
+    margin-left: 0.5em;
+}
+
+.masthead h1.ui.header {
+    margin-top: 3em;
+    margin-bottom: 0em;
+    font-size: 4em;
+    font-weight: normal;
+}
+
+.masthead h2 {
+    font-size: 1.7em;
+    font-weight: normal;
+}
+
+.ui.vertical.stripe {
+    padding: 1.3em 0em;
+}
+
+    .ui.vertical.stripe h3 {
+        font-size: 2em;
+    }
+
+    .ui.vertical.stripe .button + h3,
+    .ui.vertical.stripe p + h3 {
+        margin-top: 3em;
+    }
+
+    .ui.vertical.stripe .floated.image {
+        clear: both;
+    }
+
+    .ui.vertical.stripe p {
+        font-size: 1.33em;
+    }
+
+    .ui.vertical.stripe .horizontal.divider {
+        margin: 3em 0em;
+    }
+
+.quote.stripe.segment {
+    padding: 0em;
+}
+
+    .quote.stripe.segment .grid .column {
+        padding-top: 5em;
+        padding-bottom: 5em;
+    }
+
+.footer.segment {
+    padding: 5em 0em;
+}
+
+.ui.container .toc.item {
+    display: none;
+}
+
+@media only screen and (max-width: 700px) {
+    .ui.fixed.menu {
+        display: none !important;
+    }
+
+    .secondary.menu .item,
+    .secondary.menu .menu {
+        display: none;
+    }
+
+    .secondary.menu .toc.item {
+        display: block;
+    }
+
+    .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+    }
+
+    .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+    }
+}
+
+/*Header*/
+#top_header {
+    height: 150px;
+    text-align: center;
+    background: #3A5799;
+}
+
+    #top_header .page-logo {
+        position: relative;
+        width: auto;
+        height: 100%;
+        float: none;
+    }
+
+    #top_header .page-slogan {
+        font-size: 40px;
+        font-weight: bold;
+        float: right;
+    }
+
+#follow_header {
+    z-index: 10000;
+}
+
+#header.blue {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+    /*background: #4183C4;*/
+}
+
+#header.ui.menu .item:active {
+    color: #4183C4;
+}
+
+#header.ui.menu .item:hover {
+    color: #4183C4;
+    background: #fff;
+}
+
+#header.ui.menu .item.active {
+    color: #4183C4;
+    font-weight: bold;
+}
+
+/*Main content*/
+#main_grid_content, body.pushable > .pusher {
+    /*padding: 15px 0;*/
+    background: #F4F5F7;
+    padding-top: 0;
+}
+
+#slider {
+    width: 100%;
+}
+
+.ui.button.add-to-card {
+    padding: 10px;
+}
+
+#main_grid_content .detail-page {
+    padding-top: 20px;
+}
+
+#gallery {
+    text-align: center;
+}
+
+    /*set a border on the images to prevent shifting*/
+    #gallery img {
+        border: 2px solid white;
+    }
+
+/*Change the colour*/
+.active img {
+    border: 2px solid #333 !important;
+}
+
+#shoppingCartPage{
+    background:#fff;
+    padding-bottom:50px;
+}
+
+#productsInCart img.product-cart-img{
+    width:150px;
+}
+
+#addToCartMessage {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 2;
+    overflow: hidden;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.17);
+    width:auto;
+}
+
+#shopCart{
+    font-size:22px;padding:2px;
+}
+
+.error{
+    color:red;
+}

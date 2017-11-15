@@ -1,0 +1,122 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+
+body {
+    font-family: 'Varela Round', sans-serif !important;
+}
+
+a:hover{
+    cursor:pointer;
+}
+
+#page-wrapper h1.page-header {
+    font-size: 25px;
+}
+
+.table-fit td {
+    width: 1px;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+/*Admin auth*/
+.admin-login-container {
+    font-size:12px!important;
+}
+
+    .admin-login-container input, .admin-login-container button {
+        font-size: 12px !important;
+    }
+
+
+    .admin-login-container .login-box {
+        width: 360px;
+        margin: 7% auto;
+    }
+
+    .admin-login-container  .login-logo {
+        font-size: 35px;
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: 300;
+    }
+
+        .admin-login-container  .login-logo a {
+            color: #444;
+        }
+
+    .admin-login-container .login-box-body {
+        background: #fff;
+        padding: 20px;
+        padding-bottom: 50px;
+        border-top: 0;
+        color: #666;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .admin-login-container .login-box-msg {
+        margin: 0;
+        text-align: center;
+        padding: 0 20px 20px 20px;
+    }
+
+/*Product page*/
+#imageContainer .image-item-block {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+    #imageContainer .image-item-block > img {
+        cursor: pointer;
+    }
+
+        #imageContainer .image-item-block > img.selected {
+            border: solid 2px #888;
+        }
+
+    #imageContainer .image-item-block > a.remove-img {
+        position: absolute;
+        top:0;
+        right: 15px;
+        padding: 0 5px;
+        opacity: 0.8;
+        font-size:12px;
+    }
+
+#addProduct .cropit-preview {
+    background-color: #f8f8f8;
+    background-size: cover;
+    border: 5px solid #ccc;
+    border-radius: 3px;
+    margin-top: 7px;
+    margin: 0 auto;
+    /*width: 300px;
+    height: 300px;*/
+}
+
+#addProduct .cropit-preview-image-container {
+    cursor: move;
+}
+
+#addProduct .cropit-preview-background {
+    opacity: .2;
+    cursor: auto;
+}
+
+.admin-product-item.product-img{
+    width:150px;
+    height:150px;
+}
+
+/*Import product*/
+
+table#import_tickets_table img {
+    width:120px;
+    height:120px;
+}
+
+table#import_tickets_table textarea{
+    resize:vertical;
+}

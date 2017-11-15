@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Category>
+@{ 
+    List<SubCategory> subcateModel = (List<SubCategory>)ViewData["subcates"];
+    List<Publisher> publisherModel = (List<Publisher>)ViewData["publisher"];
+    List<Product> productModel = (List<Product>)ViewData["pros"];
+}
+
+
+<div class="col-sm-3">
+    <div class="left-sidebar">
+        <h2>Category</h2>
+        <div class="panel-group category-products" id="accordian">
+            <!--category-productsr-->
+            <ul class="nav nav-pills nav-stacked">
+                @foreach (var items in Model)
+                {
+                    <li>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordian" href="#categori_@items.Id">
+                                        @items.CategoryName<span class="badge pull-right"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="categori_@items.Id" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul>
+                                        @foreach (var item in subcateModel)
+                                        {
+                                            @if (item.CategoryId == items.Id)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Products"
+                                                       asp-action="ProductList"
+                                                       asp-route-id="@item.Id">@item.SubCategoryName</a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <!--/category-products-->
+        <div class="brands_products">
+            <!--brands_products-->
+            <h2>Brands</h2>
+            <div class="brands-name">
+                <ul class="nav nav-pills nav-stacked">
+                    @foreach (var item in publisherModel)
+                    {
+                        <li>
+                            <a asp-controller="Products"
+                               asp-action="PublisherList"
+                               asp-route-id="@item.Id">
+                            @*@foreach (var pro in productModel)
+                            {
+                                if (@pro.PublisherId = @item.Id)
+                                {
+                                    pro.
+                                }
+                            }*@
+
+                                <span class="pull-right badge pull-right">
+
+                                    @item.Products.Count()
+                                </span>
+                            @item.PublisherName</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+        <!--/brands_products-->
+        <div class="price-range">
+            <!--price-range-->
+            <h2>Price Range</h2>
+            <div class="well text-center">
+                <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2"><br />
+                <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
+            </div>
+        </div>
+        <!--/price-range-->
+        <div class="shipping text-center">
+            <!--shipping-->
+            <img src="~/images/home/shipping.jpg" alt="" />
+        </div>
+        <!--/shipping-->
+    </div>
+</div><br />

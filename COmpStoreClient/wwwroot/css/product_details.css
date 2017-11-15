@@ -1,0 +1,34 @@
+﻿
+/*set a border on the images to prevent shifting*/
+#gallery_01 img {
+    border: 2px solid white;
+}
+/*Change the colour*/
+
+.active img {
+    border: 2px solid #333 !important;
+}
+
+.ui.tiny.image.custom {
+    width: 60px;
+}
+
+.ui.medium.image.custom {
+    width: 350px;
+}
+
+.container.custom {
+    text-align: center;
+}
+
+.pushable > .pusher {
+    position: static;
+}
+
+.ui.grid.stackable.custom{
+    margin-top:0px;
+}
+
+.label.custom{
+    margin-top:10px;
+}
