@@ -16,16 +16,16 @@ namespace COmpStoreApi.Controllers
     [Route("api/[controller]")]
     public class SubCategoryController : Controller
     {
-            private ISubCategoryRepo Repo { get; set; }
-            private IProductRepo ProductRepo { get; set; }
+        private ISubCategoryRepo Repo { get; set; }
+        private IProductRepo ProductRepo { get; set; }
 
-            public SubCategoryController(ISubCategoryRepo repo, IProductRepo productRepo)
-            {
-                Repo = repo;
-                ProductRepo = productRepo;
-            }
+        public SubCategoryController(ISubCategoryRepo repo, IProductRepo productRepo)
+        {
+            Repo = repo;
+            ProductRepo = productRepo;
+        }
 
-       
+
 
         [HttpGet]
         public IEnumerable<SubCategoryAndCategoryBase> Get()
@@ -60,7 +60,7 @@ namespace COmpStoreApi.Controllers
         public SubCategoryAdminUpdate GetAdminSubCategoryUpdate(int id)
         {
             var sub = Repo.Find(id);
-            return new SubCategoryAdminUpdate { Id = sub.Id, Name = sub.SubCategoryName, CategoryId = sub.CategoryId };
+            return sub != null ? new SubCategoryAdminUpdate { Id = sub.Id, Name = sub.SubCategoryName, CategoryId = sub.CategoryId } : null;
         }
 
         [HttpPost("admin")]

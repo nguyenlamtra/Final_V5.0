@@ -24,10 +24,7 @@ namespace COmpStoreClient.Controllers
 
         public IActionResult Error() => View();
 
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public IActionResult Login() => View();
 
         [HttpPost]
         public async Task<IActionResult> Login(CustomerLogin model)

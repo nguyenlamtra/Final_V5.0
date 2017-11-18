@@ -15,6 +15,7 @@ namespace COmpStore.DAL.Repos.Interfaces
         IEnumerable<PublisherAdminIndex> GetForAdminPublisherIndex();
         PublisherAdminDetails GetForAdminPublisherDetails(int id);
         IEnumerable<PublisherCombobox> GetPublisherCombobox();
+        int DeletePublisher(int id, bool persist = true);
         //=====================
     }
 }

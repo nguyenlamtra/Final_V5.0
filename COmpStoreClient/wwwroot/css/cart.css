@@ -1,0 +1,20 @@
+﻿.cart_quantity_up:hover, .cart_quantity_down:hover, .cart_quantity_delete {
+    cursor: pointer;
+}
+
+.cart_quantity_up:active, .cart_quantity_down:active, .cart_quantity_delete {
+    background-color: #FE980F;
+}
+
+.total-custom {
+    color: #FE980F;
+    font-size: 24px;
+}
+
+.btn-order {
+    min-width: 100px;
+}
+
+.product-name {
+    text-transform:uppercase;
+}

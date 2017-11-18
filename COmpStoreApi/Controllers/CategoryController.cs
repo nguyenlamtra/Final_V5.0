@@ -78,26 +78,14 @@ namespace COmpStoreApi.Controllers
 
         [HttpDelete("admin/{id}")]
         [Authorize(Policy = "Admin")]
-        public int Delete(int id)
-        {
-            try
-            {
-                var cat = Repo.Find(id);
-                if (cat != null)
-                    Repo.Delete(cat);
-                return 1;
-            }
-            catch (Exception e)
-            {
-                return 0;
-            }
-        }
+        public int Delete(int id) => Repo.DeleteCategory(id);
 
         [HttpGet("admin/update/{id}")]
         public CategoryAdminUpdate GetAdminCategoryUpdate(int id)
         {
             var cat = Repo.Find(id);
-            return new CategoryAdminUpdate { Id = cat.Id, CategoryName = cat.CategoryName };
+
+            return cat != null ? new CategoryAdminUpdate { Id = cat.Id, CategoryName = cat.CategoryName } : null;
         }
 
         //=================================

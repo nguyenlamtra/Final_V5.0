@@ -45,7 +45,7 @@ namespace COmpStoreApi.Controllers
              => ProductRepo.GetProductsForPublisher(publisherId).ToList();
 
         //=================================
-        [Authorize(Policy = "Admin")]
+        //[Authorize(Policy = "Admin")]
         [HttpGet("admin")]
         public IEnumerable<PublisherAdminIndex> GetAdminPublisherIndex()
         => Repo.GetForAdminPublisherIndex();
@@ -95,8 +95,8 @@ namespace COmpStoreApi.Controllers
         [Authorize(Policy = "Admin")]
         public PublisherAdminUpdate GetAdminPublisherUpdate(int id)
         {
-            var cat = Repo.Find(id);
-            return new PublisherAdminUpdate { Id = cat.Id, Name = cat.PublisherName };
+            var publisher = Repo.Find(id);
+            return publisher != null ? new PublisherAdminUpdate { Id = publisher.Id, Name = publisher.PublisherName } : null;
         }
 
         [HttpGet("admin/combobox")]

@@ -15,6 +15,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using COmpStore.Models.ViewModels.Cart;
+using COmpStore.Models.ViewModels.OrderAdmin;
+using COmpStore.Models.Enum;
 
 namespace COmpStoreClient.WebServiceAccess
 {
@@ -26,16 +29,6 @@ namespace COmpStoreClient.WebServiceAccess
         }
 
         //Cart 
-        public async Task<IList<CartRecordWithProductInfo>> GetCartAsync(int customerId)
-        {
-            // http://localhost:40001/api/ShoppingCart/0
-            return await GetItemListAsync<CartRecordWithProductInfo>($"{CartBaseUri}{customerId}");
-        }
-        public async Task<CartRecordWithProductInfo> GetCartRecordAsync(int customerId, int productId)
-        {
-            // http://localhost:40001/api/ShoppingCart/0/0
-            return await GetItemAsync<CartRecordWithProductInfo>($"{CartBaseUri}{customerId}/{productId}");
-        }
         public async Task<string> AddToCartAsync(int customerId, int productId, int quantity)
         {
             //http://localhost:40001/api/shoppingcart/{customerId} HTTPPost
@@ -57,16 +50,6 @@ namespace COmpStoreClient.WebServiceAccess
             return int.Parse(await SubmitPostRequestAsync(uri, json));
         }
 
-        public async Task<string> UpdateCartItemAsync(ShoppingCartRecord item)
-        {
-            // Change Cart Item(Quantity): http://localhost:40001/api/shoppingcart/{customerId}/{id} HTTPPut
-            //   Note: Id, CustomerId, ProductId, TimeStamp, DateCreated, and Quantity in the body
-            //{"Id":0,"CustomerId":0,"ProductId":32,"Quantity":2, "TimeStamp":"AAAAAAAA86s=","DateCreated":"1/20/2016"}
-            //http://localhost:40001/api/shoppingcart/0/AAAAAAAA86s=
-            string uri = $"{CartBaseUri}{item.CustomerId}/{item.Id}";
-            var json = JsonConvert.SerializeObject(item);
-            return await SubmitPutRequestAsync(uri, json);
-        }
         public async Task RemoveCartItemAsync(int customerId, int shoppingCartRecordId, byte[] timeStamp)
         {
             //Remove Cart Item: http://localhost:40001/api/shoppingcart/{customerId}/{id}/{TimeStamp} HTTPDelete
@@ -159,13 +142,7 @@ namespace COmpStoreClient.WebServiceAccess
             //Get Order History: http://localhost:40001/api/orders/{customerId}
             return await GetItemListAsync<Order>($"{OrdersBaseUri}{customerId}");
         }
-        public async Task<OrderWithDetailsAndProductInfo> GetOrderDetailsAsync(
-  int customerId, int orderId)
-        {
-            //Get Order Details: http://localhost:40001/api/orders/{customerId}/{orderId}
-            var url = $"{OrdersBaseUri}{customerId}/{orderId}";
-            return await GetItemAsync<OrderWithDetailsAndProductInfo>(url);
-        }
+      
         //Search
         public async Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm)
         {
@@ -215,7 +192,7 @@ namespace COmpStoreClient.WebServiceAccess
         public async Task<CategoryAdminUpdate> GetSingleCategory(int id)
         {
             // get single category http://localhost:40001/api/category/admin/update/{id}
-            var uri = $"{ServiceAddress}api/category/admin/{id}";
+            var uri = $"{ServiceAddress}api/category/admin/update/{id}";
             return await GetItemAsync<CategoryAdminUpdate>(uri);
         }
 
@@ -259,7 +236,7 @@ namespace COmpStoreClient.WebServiceAccess
         public async Task<PublisherAdminUpdate> GetSinglePublisher(int id)
         {
             // get single publisher http://localhost:40001/api/publisher/admin/update/{id}
-            var uri = $"{ServiceAddress}api/publisher/admin/{id}";
+            var uri = $"{ServiceAddress}api/publisher/admin/update/{id}";
             return await GetItemAsync<PublisherAdminUpdate>(uri);
         }
 
@@ -303,7 +280,7 @@ namespace COmpStoreClient.WebServiceAccess
         public async Task<SubCategoryAdminUpdate> GetSingleSubCategory(int id)
         {
             // get single subcategory http://localhost:40001/api/subcategory/admin/update/{id}
-            var uri = $"{ServiceAddress}api/subcategory/admin/{id}";
+            var uri = $"{ServiceAddress}api/subcategory/admin/update/{id}";
             return await GetItemAsync<SubCategoryAdminUpdate>(uri);
         }
 
@@ -382,6 +359,93 @@ namespace COmpStoreClient.WebServiceAccess
         public void SetToken(string token)
         {
             this.Token = token;
+        }
+
+        public async Task<IEnumerable<CartModel>> GetCartView(int[] ids)
+        {
+            try
+            {
+                var selectedProducts = new List<CartModel>();
+                foreach (int id in ids)
+                {
+                    var uri = $"{ServiceAddress}api/product/cart/{id}";
+                    var selectedProduct = await GetItemAsync<CartModel>(uri);
+                    if (selectedProduct != null)
+                        selectedProducts.Add(selectedProduct);
+                }
+                return selectedProducts;
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return null;
+            }
+            
+        }
+
+        public async Task<string> SaveOrder(OrderModel model)
+        {
+            var uri = $"{ServiceAddress}api/orders";
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<IEnumerable<CustomerAdminIndex>> GetAdminCustomerIndex()
+        {
+            var uri = $"{ServiceAddress}api/customer/admin";
+            return await GetItemListAsync<CustomerAdminIndex>(uri);
+        }
+
+        public async Task<CustomerAdminDetails> GetAdminCustomerDetails(int id)
+        {
+            var uri = $"{ServiceAddress}api/customer/admin/{id}";
+            return await GetItemAsync<CustomerAdminDetails>(uri);
+        }
+
+        public async Task<string> CreateCustomer(CustomerAdminCreate model)
+        {
+            var uri = $"{ServiceAddress}api/customer/admin";
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> UpdateCustomer(CustomerAdminUpdate model)
+        {
+            var uri = $"{ServiceAddress}api/customer/admin";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> DeleteCustomer(int id)
+        {
+            var uri = $"{ServiceAddress}api/customer/admin/{id}";
+            return await SubmitDeleteRequestAsync(uri);
+        }
+
+        public async Task<CustomerAdminUpdate> GetSingleCustomer(int id)
+        {
+            var uri = $"{ServiceAddress}api/customer/admin/update/{id}";
+            return await GetItemAsync<CustomerAdminUpdate>(uri);
+        }
+
+        public async Task<IEnumerable<OrderAdminIndex>> GetOrderAdminIndex()
+        {
+            var uri = $"{ServiceAddress}api/orders/admin";
+            return await GetItemListAsync<OrderAdminIndex>(uri);
+        }
+
+        public async Task<OrderAdminDetails> GetOrderAdminDetails(int id)
+        {
+            var uri = $"{ServiceAddress}api/orders/admin/{id}";
+            return await GetItemAsync<OrderAdminDetails>(uri);
+        }
+
+        public async Task<string> ChangeStatusOrder(OrderAdminChangeStatus model)
+        {
+            var uri = $"{ServiceAddress}api/orders/admin/change-status";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(model));
+        }
+
+        public async Task<string> UpdateIsFeature(int id)
+        {
+            var uri = $"{ServiceAddress}api/product/admin/change-isfeature";
+            return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(new ProductAdminUpdateIsFeature { Id = id }));
         }
 
         //===========================================================================================================

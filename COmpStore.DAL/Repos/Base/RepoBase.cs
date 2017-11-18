@@ -29,16 +29,16 @@ namespace COmpStore.DAL.Repos.Base
 
         public bool HasChanges => Db.ChangeTracker.HasChanges();
 
-        public int Count => Table.Count();
+        public int Count => Table.Where(x => x.IsDeleted == false).Count();
 
-        public T GetFirst() => Table.FirstOrDefault();
+        public T GetFirst() => Table.Where(x => x.IsDeleted == false).FirstOrDefault();
 
-        public T Find(int? id) => Table.Find(id);
+        public T Find(int? id) => Table.Where(x => x.IsDeleted == false).SingleOrDefault(x => x.Id == id);//Table.Find(id);
 
-        public virtual IEnumerable<T> GetAll() => Table;
+        public virtual IEnumerable<T> GetAll() => Table.Where(x => x.IsDeleted == false);
 
         internal IEnumerable<T> GetRange(IQueryable<T> query, int skip, int take)
-            => query.Skip(skip).Take(take);
+            => query.Skip(skip).Take(take).Where(x => x.IsDeleted == false);
         public virtual IEnumerable<T> GetRange(int skip, int take)
             => GetRange(Table, skip, take);
 
@@ -64,7 +64,9 @@ namespace COmpStore.DAL.Repos.Base
         }
         public virtual int Delete(T entity, bool persist = true)
         {
-            Table.Remove(entity);
+            //Table.Remove(entity);
+            Table.Attach(entity);
+            entity.IsDeleted = true;
             return persist ? SaveChanges() : 0;
         }
         public virtual int DeleteRange(IEnumerable<T> entities, bool persist = true)
@@ -107,20 +109,20 @@ namespace COmpStore.DAL.Repos.Base
                 //A concurrency error occurred
                 //Should handle intelligently
                 Console.WriteLine(ex);
-                throw(new Exception(ex.ToString()));
+                return 0;
             }
             catch (RetryLimitExceededException ex)
             {
                 //DbResiliency retry limit exceeded
                 //Should handle intelligently
                 Console.WriteLine(ex);
-                throw (new Exception(ex.ToString()));
+                return 0;
             }
             catch (Exception ex)
             {
                 //Should handle intelligently
                 Console.WriteLine(ex);
-                throw (new Exception(ex.ToString()));
+                return 0;
                 //-2146232060
                 //throw new Exception($"{ex.HResult}");
             }

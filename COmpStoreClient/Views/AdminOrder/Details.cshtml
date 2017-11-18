@@ -1,0 +1,93 @@
+﻿@using COmpStore.Models.ViewModels.OrderAdmin
+@using COmpStore.Models.Enum
+@model OrderAdminDetails
+@{
+    ViewData["Title"] = "Chi tiết";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Đơn đặt hàng - Chi tiết</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Tên người đặt: </label><span> @Model.FullName</span>
+            </div>
+            <div class="form-group">
+                <label>Ngày đặt: </label><span> @Model.OrderDate</span>
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại: </label><span> @Model.Phone</span>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Địa chỉ: </label><span> @Model.Address</span>
+            </div>
+            <div class="form-group">
+                <label>Tình trạng: </label>
+                @switch (Model.Status)
+                {
+                    case EnumOrderStatus.NotReadYet:
+                        <span>Chưa xử lí</span>
+                        break;
+                    case EnumOrderStatus.Processing:
+                        <span>Đang xử lí</span>
+                        break;
+                    case EnumOrderStatus.Completed:
+                        <span>Đã hoàn tất</span>
+                        break;
+                    case EnumOrderStatus.Denied:
+                        <span>Đã bị từ chối</span>
+                        break;
+                }
+            </div>
+            <div class="form-group">
+                <label>Số lượng sản phẩm đặt: </label><span> @Model.OrderDetails.Count()</span>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-12 -->
+    <div class="col-md-12">
+        <div class="panel-body">
+            @if (Model.Status == EnumOrderStatus.Processing)
+            {
+                <div class="form-group">
+                    <a asp-action="CompleteOrder" asp-controller="AdminOrder" asp-route-orderId="@Model.Id" class="btn btn-primary btn-sm">Hoàn tất</a>
+                    <a asp-action="DenyOrder" asp-controller="AdminOrder" asp-route-orderId="@Model.Id" class="btn btn-danger btn-sm">Hủy</a>
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table id="content_table" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var orderDetail in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td>@orderDetail.ProductName</td>
+                                <td>@orderDetail.Quantity</td>
+                                <td>@orderDetail.UnitCost</td>
+                                <td>@orderDetail.UnitCost</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.row -->

@@ -5,118 +5,115 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using COmpStoreClient.WebServiceAccess.Base;
 using AutoMapper;
-using COmpStoreClient.ViewModels;
 using Newtonsoft.Json;
 using COmpStore.Models.Entities;
 using COmpStore.Models.ViewModels;
 using COmpStore.Models.Entities.ViewModels.Base;
+using COmpStore.Models.ViewModels.Cart;
+using COmpStoreClient.Extension;
+using COmpStoreClient.Exceptions;
 
 namespace COmpStoreClient.Controllers
 {
-    [Route("[controller]/[action]/{customerId}")]
     public class CartController : Controller
     {
         private readonly IWebApiCalls _webApiCalls;
-        readonly MapperConfiguration _config = null;
         public CartController(IWebApiCalls webApiCalls)
         {
             _webApiCalls = webApiCalls;
-            _config = new MapperConfiguration(
-                cfg =>
+        }
+
+        //============================================================
+        [HttpPost]
+        public IActionResult ChangeQuantity([FromBody]SelectedProduct selectedProduct)
+        {
+            var selectedProducts = HttpContext.Session.GetSelectedProducts();
+            if (selectedProduct.Quantity > 0)
+            {
+                var temp = selectedProducts.SingleOrDefault(x => x.ProductId == selectedProduct.ProductId);
+                temp.Quantity = selectedProduct.Quantity;
+                HttpContext.Session.SetSelectedProducts(selectedProducts);
+                return Json(true);
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
+
+        public async Task<IActionResult> ShoppingCart()
+        {
+            var selectedProducts = HttpContext.Session.GetSelectedProducts();
+            var viewModel = await _webApiCalls.GetCartView(selectedProducts.Select(x => x.ProductId).ToArray());
+            selectedProducts.OrderBy(x => x.ProductId);
+            viewModel.OrderBy(x => x.ProductId);
+            ViewBag.Products = viewModel;
+
+            return View(new OrderModel { SelectedProducts = selectedProducts });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ShoppingCart(OrderModel orderModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var auth = HttpContext.Session.GetAuthSession();
+                if (auth == null) throw new AuthCustomerException();
+                orderModel.EmailAddress = auth.EmailAddress;
+                var result = await _webApiCalls.SaveOrder(orderModel);
+                if (result.Equals("1"))
                 {
-                    cfg.CreateMap<CartRecordViewModel, ShoppingCartRecord>();
-                    cfg.CreateMap<CartRecordWithProductInfo, CartRecordViewModel>();
-                    cfg.CreateMap<ProductAndSubCategoryBase, AddToCartViewModel>();
-                });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index(int customerId)
-        {
-            ViewBag.Title = "Cart";
-            ViewBag.Header = "Cart";
-            var cartItems = await _webApiCalls.GetCartAsync(customerId);
-            var customer = await _webApiCalls.GetCustomerAsync(customerId);
-            var mapper = _config.CreateMapper();
-            var viewModel = new CartViewModel
-            {
-                Customer = customer,
-                CartRecords = mapper.Map<IList<CartRecordViewModel>>(cartItems)
-            };
-            return View(viewModel);
-        }
-
-        [HttpGet("{productId}")]
-        public async Task<IActionResult> AddToCart(int customerId, int productId, bool cameFromProducts = false)
-        {
-            ViewBag.CameFromProducts = cameFromProducts;
-            ViewBag.Title = "Add to Cart";
-            ViewBag.Header = "Add to Cart";
-            ViewBag.ShowCategory = true;
-            var prod = await _webApiCalls.GetOneProductAsync(productId);
-            if (prod == null) return NotFound();
-            var mapper = _config.CreateMapper();
-            var cartRecord = mapper.Map<AddToCartViewModel>(prod);
-            cartRecord.Quantity = 1;
-            return View(cartRecord);
-        }
-
-        [ActionName("AddToCart"), HttpPost("{productId}"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCartPost(
-            int customerId, int productId, AddToCartViewModel item)
-        {
-            if (!ModelState.IsValid) return View(item);
-            try
-            {
-                await _webApiCalls.AddToCartAsync(customerId, productId, item.Quantity);
+                    ViewBag.OrderSuccess = true;
+                    HttpContext.Session.SetAuthSession(null);
+                    return RedirectToAction("Index", "Product");
+                }
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "There was an error adding the item to the cart.");
-                return View(item);
-            }
-            return RedirectToAction(nameof(CartController.Index), new { customerId });
+            var viewModel = await _webApiCalls.GetCartView(orderModel.SelectedProducts.Select(x => x.ProductId).ToArray());
+            orderModel.SelectedProducts.OrderBy(x => x.ProductId);
+            viewModel.OrderBy(x => x.ProductId);
+            ViewBag.Products = viewModel;
+
+            return View(orderModel);
         }
 
-        [HttpPost("{id}"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int customerId, int id,
-            string timeStampString, CartRecordViewModel item)
+        public IActionResult RemoveProductFromCart(int productId)
         {
-            item.TimeStamp = JsonConvert.DeserializeObject<byte[]>($"\"{timeStampString}\"");
-            if (!ModelState.IsValid) return PartialView(item);
-            var mapper = _config.CreateMapper();
-            var newItem = mapper.Map<ShoppingCartRecord>(item);
-            try
+            var selectedProducts = HttpContext.Session.GetSelectedProducts();
+            var product = selectedProducts.SingleOrDefault(x => x.ProductId == productId);
+            if (product != null)
             {
-                await _webApiCalls.UpdateCartItemAsync(newItem);
-                var updatedItem = await _webApiCalls.GetCartRecordAsync(customerId, item.ProductId);
-                var newViewModel = mapper.Map<CartRecordViewModel>(updatedItem);
-                return PartialView(newViewModel);
+                selectedProducts.Remove(product);
+                HttpContext.Session.SetSelectedProducts(selectedProducts);
+                return Json(true);
             }
-            catch (Exception ex)
+            else return Json(false);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int productId)
+        {
+            var product = await _webApiCalls.GetSingleProduct(productId);
+            if (product != null && product.UnitsInStock > 0)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred updating the cart.  Please reload the page and try again.");
-                return PartialView(item);
+                var selectedProducts = HttpContext.Session.GetSelectedProducts();
+                var selectedProduct = selectedProducts.SingleOrDefault(x => x.ProductId == productId);
+
+                if (selectedProduct != null)
+                    if (selectedProduct.Quantity + 1 > product.UnitsInStock)
+                        return Json(false);
+                    else
+                        selectedProduct.Quantity++;
+                else
+                    selectedProducts.Add(new SelectedProduct { ProductId = productId, Quantity = 1 });
+                HttpContext.Session.SetSelectedProducts(selectedProducts);
+                return Json(true);
             }
-        }
+            else
+                return Json(false);
 
-        [HttpPost("{id}"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int customerId, int id,
-            ShoppingCartRecord item)
-        {
-            await _webApiCalls.RemoveCartItemAsync(customerId, id, item.TimeStamp);
-            return RedirectToAction(nameof(Index), new { customerId });
-        }
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Buy(int customerId, Customer customer)
-        {
-            int orderId = await _webApiCalls.PurchaseCartAsync(customer);
-            return RedirectToAction(
-                nameof(OrdersController.Details),
-                nameof(OrdersController).Replace("Controller", ""),
-                new { customerId, orderId });
-        }
 
+        }
+        //============================================================
     }
 }

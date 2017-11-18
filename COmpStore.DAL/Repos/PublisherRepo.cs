@@ -22,21 +22,21 @@ namespace COmpStore.DAL.Repos
         {
         }
         public override IEnumerable<Publisher> GetAll()
-            => Table.OrderBy(x => x.PublisherName);
+            => Table.Where(x => x.IsDeleted == false).OrderBy(x => x.PublisherName);
 
         public override IEnumerable<Publisher> GetRange(int skip, int take)
             => GetRange(Table.OrderBy(x => x.PublisherName), skip, take);
 
         public Publisher GetOneWithProductByPublisher(int? id)
-            => Table.Include(x => x.Products).FirstOrDefault(x => x.Id == id);
+            => Table.Where(x => x.IsDeleted == false).Include(x => x.Products).FirstOrDefault(x => x.Id == id);
 
         public IEnumerable<Publisher> GetAllWithProductsByPublisher()
-            => Table.Include(x => x.Products);
+            => Table.Where(x => x.IsDeleted == false).Include(x => x.Products);
 
         //==============================
 
         internal IEnumerable<ProductRelate> GetRecordPro(IEnumerable<Product> p)
-           => p.Select(pro => new ProductRelate()
+           => p.Where(x => x.IsDeleted == false).Select(pro => new ProductRelate()
            {
                Id = pro.Id,
                ProductName = pro.ProductName,
@@ -44,7 +44,7 @@ namespace COmpStore.DAL.Repos
            }).ToList();
 
         public PublisherAdminDetails GetForAdminPublisherDetails(int id)
-            => Table.Include(p => p.Products).Select(c => new PublisherAdminDetails
+            => Table.Where(x => x.IsDeleted == false).Include(p => p.Products).Select(c => new PublisherAdminDetails
             {
                 Id = c.Id,
                 Name = c.PublisherName,
@@ -52,18 +52,33 @@ namespace COmpStore.DAL.Repos
             }).SingleOrDefault(p => p.Id == id);
 
         public IEnumerable<PublisherAdminIndex> GetForAdminPublisherIndex()
-            => Table.Select(c => new PublisherAdminIndex
+            => Table.Where(x => x.IsDeleted == false).Select(c => new PublisherAdminIndex
             {
                 Id = c.Id,
                 Name = c.PublisherName,
                 SumProducts = c.Products.Count
             });
 
-        public IEnumerable<PublisherCombobox> GetPublisherCombobox() => Table.Select(p => new PublisherCombobox
+        public IEnumerable<PublisherCombobox> GetPublisherCombobox() 
+            => Table.Where(x => x.IsDeleted == false).Select(p => new PublisherCombobox
+            {
+                Id = p.Id,
+                Name = p.PublisherName
+            });
+
+        public int DeletePublisher(int id, bool persist = true)
         {
-            Id = p.Id,
-            Name = p.PublisherName
-        });
+            var publisher = Db.Publishers.Include(x => x.Products).SingleOrDefault(x => x.Id == id);
+            if (publisher != null)
+            {
+                publisher.IsDeleted = true;
+                publisher.Products.ForEach(x => x.IsDeleted = true);
+                Db.SaveChanges();
+                return 1;
+            }
+            else
+                return 0;
+        }
         //===============================
     }
 }

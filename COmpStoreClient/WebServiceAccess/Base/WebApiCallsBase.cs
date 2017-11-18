@@ -187,7 +187,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
             {
                 using (var client = new HttpClient())
                 {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                    SetTokenHeader(client);
 
                     var response = await client.GetAsync(uri);
 
@@ -277,7 +277,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
         {
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                SetTokenHeader(client);
                 var task = client.PostAsync(uri, CreateStringContent(json));
                 return await ExecuteRequestAndProcessResponse(uri, task);
             }
@@ -287,7 +287,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
         {
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                SetTokenHeader(client);
                 //var requestMessage = new HttpRequestMessage(HttpMethod.Put,uri);
                 //requestMessage.Content = CreateStringContent(json);
                 //var response = await client.SendAsync(requestMessage);
@@ -302,7 +302,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
             {
                 using (var client = new HttpClient())
                 {
-
+                    SetTokenHeader(client);
                     Task<HttpResponseMessage> deleteAsync = client.DeleteAsync(uri);
                     var response = await deleteAsync;
                     if (!response.IsSuccessStatusCode)
@@ -320,9 +320,9 @@ namespace COmpStoreClient.WebServiceAccess.Base
             }
         }
 
-        internal HttpClient SetTokenHeader(HttpClient client, string token)
+        internal HttpClient SetTokenHeader(HttpClient client)
         {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
             return client;
         }
     }

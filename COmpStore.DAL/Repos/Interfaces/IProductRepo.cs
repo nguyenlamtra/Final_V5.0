@@ -2,6 +2,7 @@
 using COmpStore.Models.Entities;
 using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.Base;
+using COmpStore.Models.ViewModels.Cart;
 using COmpStore.Models.ViewModels.Paging;
 using COmpStore.Models.ViewModels.ProductAdmin;
 using System;
@@ -23,7 +24,8 @@ namespace COmpStore.DAL.Repos.Interfaces
         string GetImageProduct(int id);
         int UpdateExceptImage(Product model, bool persist = true);
         PageOutput<ProductAdminIndex> GetProductAdminIndex(int pageNumber = 1, int pageSize = 2);
-
+        CartModel GetCartView(int id);
+        decimal GetProductUnitCostByProductIdAsNoTracking(int productId);
         //======================================================================================================
     }
 }

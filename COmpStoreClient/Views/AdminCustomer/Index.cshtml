@@ -1,0 +1,68 @@
+﻿@using COmpStore.Models.ViewModels.Customer
+@model IEnumerable<CustomerAdminIndex>
+@{
+    ViewData["Title"] = "Quản lí Customer";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Customer</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="form-group">
+                    <a asp-action="Create" asp-controller="AdminCustomer" id="add_btn" class="btn btn-primary btn-sm">Thêm</a>
+                    <a id="btn_delete" class="btn btn-danger btn-sm disabled">Xóa</a>
+                    <a id="btn_uncheck" class="btn btn-default btn-sm pull-right" style="display:none">Bỏ chọn</a>
+                </div>
+                <div class="table-responsive">
+                    <table id="content_table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Số đơn hàng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var customer in Model)
+                            {
+                                <tr data-id="@customer.Id">
+                                    <td>@customer.Id</td>
+                                    <td>@customer.Name</td>
+                                    <td>@customer.EmailAddress</td>
+                                    <td>@customer.SumOrders</td>
+                                    <td class="text-center">
+                                        <a asp-action="Details" asp-controller="AdminCustomer" asp-route-id="@customer.Id" class="text-primary" title="Chi tiết">
+                                            <span class="glyphicon glyphicon-info-sign"></span>
+                                        </a>
+                                        <a asp-action="Update" asp-controller="AdminCustomer" asp-route-id="@customer.Id" class="text-primary" title="Chỉnh sửa">
+                                            &nbsp;<span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+@section Scripts{
+    <script src="~/js/admin_customer.js"></script>
+}

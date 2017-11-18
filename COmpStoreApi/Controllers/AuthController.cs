@@ -96,7 +96,7 @@ namespace COmpStoreApi.Controllers
                     {
                         Role=customer.Role,
                         Token=jwtToken,
-                        UserName=customer.EmailAddress
+                        EmailAddress = customer.EmailAddress
                     };
                 }
                 return null;

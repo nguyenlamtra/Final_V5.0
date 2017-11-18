@@ -19,6 +19,11 @@ namespace COmpStore.Models.Entities
         [DataType(DataType.Date)]
         [Display(Name = "Date Shipped")]
         public DateTime ShipDate { get; set; }
+        public string Status { get; set; }
+        [StringLength(20, MinimumLength = 8)]
+        public string Phone { get; set; }
+        [StringLength(100)]
+        public string Address { get; set; }
         [ForeignKey("CustomerId")]
         public Customer Customer { get; set; }
         [InverseProperty("Order")]

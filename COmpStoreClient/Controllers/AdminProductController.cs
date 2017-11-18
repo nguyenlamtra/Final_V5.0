@@ -19,20 +19,16 @@ namespace COmpStoreClient.Controllers
             _webApiCalls = webApiCalls;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Index()
-        //{
-        //    IList<ProductAdminIndex> products;
-        //    products = await _webApiCalls.GetAdminProductIndex();
-        //    return View(products);
-        //}
-
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber=1)
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            PageOutput<ProductAdminIndex> pageOutput;
-            pageOutput = await _webApiCalls.GetAdminProductIndex(pageNumber);
-            return View(pageOutput);
+            if (pageNumber > 0)
+            {
+                PageOutput<ProductAdminIndex> pageOutput;
+                pageOutput = await _webApiCalls.GetAdminProductIndex(pageNumber);
+                return View(pageOutput);
+            }
+            return View();
         }
 
         public async Task<IActionResult> Create()
@@ -61,12 +57,17 @@ namespace COmpStoreClient.Controllers
         {
             var product = await _webApiCalls.GetSingleProduct(id);
 
-            ViewBag.SubCategories = await _webApiCalls.GetSubCategoryForCombobox();
-            ViewBag.Publishers = await _webApiCalls.GetPublisherForCombobox();
-            ViewBag.SubCategoryId = product.SubCategoryId;
-            ViewBag.PublisherId = product.PublisherId;
+            if (product != null)
+            {
+                ViewBag.SubCategories = await _webApiCalls.GetSubCategoryForCombobox();
+                ViewBag.Publishers = await _webApiCalls.GetPublisherForCombobox();
+                ViewBag.SubCategoryId = product.SubCategoryId;
+                ViewBag.PublisherId = product.PublisherId;
 
-            return View(product);
+                return View(product);
+            }
+            else
+                return RedirectToAction("Index","AdminProduct");
         }
 
         [HttpPost]
@@ -82,8 +83,10 @@ namespace COmpStoreClient.Controllers
                 if (result.Equals("1"))
                     ViewBag.IsSuccess = true;
                 var product = await _webApiCalls.GetSingleProduct(model.Id);
-                
-                return View(product);
+                if(product!=null)
+                    return View(product);
+                else
+                    return RedirectToAction("Index", "AdminProduct");
             }
             return View(model);
         }
@@ -97,6 +100,13 @@ namespace COmpStoreClient.Controllers
                     return Json(false);
             }
             return Json(true);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeIsFeature(int id)
+        {
+            var result = await _webApiCalls.UpdateIsFeature(id);
+            return result.Equals("1") ? Json(true) : Json(false);    
         }
     }
 }

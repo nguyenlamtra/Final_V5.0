@@ -26,8 +26,5 @@ namespace COmpStore.Models.Entities
 
         [InverseProperty(nameof(Order.Customer))]
         public List<Order> Orders { get; set; } = new List<Order>();
-        [InverseProperty(nameof(ShoppingCartRecord.Customer))]
-        public virtual List<ShoppingCartRecord> ShoppingCartRecords { get; set; }
-        = new List<ShoppingCartRecord>();
     }
 }

@@ -9,7 +9,5 @@ namespace COmpStore.DAL.Repos.Interfaces
 {
     public interface IOrderDetailRepo : IRepo<OrderDetail>
     {
-        IEnumerable<OrderDetailWithProductInfo> GetCustomersOrdersWithDetails(int customerId);
-        IEnumerable<OrderDetailWithProductInfo> GetSingleOrderWithDetails(int orderId);
     }
 }

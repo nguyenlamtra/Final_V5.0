@@ -120,3 +120,8 @@ table#import_tickets_table img {
 table#import_tickets_table textarea{
     resize:vertical;
 }
+
+
+.glyphicon{
+    margin-right:10px;
+}

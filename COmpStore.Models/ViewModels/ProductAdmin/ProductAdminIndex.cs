@@ -10,5 +10,6 @@ namespace COmpStore.Models.ViewModels.ProductAdmin
         public string Name { get; set; }
         public string ProductImage { get; set; }
         public int UnitsInStock { get; set; }
+        public bool IsFeature { get; set; }
     }
 }

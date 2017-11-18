@@ -35,10 +35,6 @@ namespace COmpStore.Models.Entities
         [ForeignKey(nameof(PublisherId))]
         public Publisher Publisher { get; set; }
 
-
-        [InverseProperty(nameof(ShoppingCartRecord.Product))]
-        public List<ShoppingCartRecord> ShoppingCartRecords { get; set; }
-            = new List<ShoppingCartRecord>();
         [InverseProperty(nameof(OrderDetail.Product))]
         public List<OrderDetail> OrderDetails { get; set; }
             = new List<OrderDetail>();

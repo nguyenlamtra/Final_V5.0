@@ -1,4 +1,7 @@
-﻿
+﻿function deleteItem(url)
+{
+    
+}
 
 $(document).ready(function () {
 

@@ -8,50 +8,141 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using COmpStore.Models.ViewModels.Cart;
+using COmpStore.Models.ViewModels.OrderAdmin;
+using COmpStore.Models.ViewModels.ProductAdmin;
+using COmpStore.Models.ViewModels.OrderDetailsAdmin;
+using COmpStore.Models.Enum;
 
 namespace COmpStore.DAL.Repos
 {
     public class OrderRepo : RepoBase<Order>, IOrderRepo
     {
         private readonly IOrderDetailRepo _orderDetailRepo;
+
         public OrderRepo(DbContextOptions<StoreContext> options, IOrderDetailRepo orderDetailRepo) : base(options)
         {
-            _orderDetailRepo = orderDetailRepo;
+            _orderDetailRepo = _orderDetailRepo;
         }
         public OrderRepo(IOrderDetailRepo orderDetailRepo)
         {
             _orderDetailRepo = orderDetailRepo;
         }
 
-        public override IEnumerable<Order> GetAll()
-            => Table.OrderByDescending(x => x.OrderDate);
-
-        public override IEnumerable<Order> GetRange(int skip, int take)
-            => GetRange(Table.OrderByDescending(x => x.OrderDate), skip, take);
-
-        public IEnumerable<Order> GetOrderHistory(int customerId)
-            => Table.Where(x => x.CustomerId == customerId)
-                    .Select(x => new Order
-                    {
-                        Id = x.Id,
-                        TimeStamp = x.TimeStamp,
-                        CustomerId = customerId,
-                        OrderDate = x.OrderDate,
-                        OrderTotal = x.OrderTotal,
-                        ShipDate = x.ShipDate,
-                    });
-        public OrderWithDetailsAndProductInfo GetOneWithDetails(int customerId, int orderId)
-            => Table
-                .Where(x => x.CustomerId == customerId && x.Id == orderId)
-                .Select(x => new OrderWithDetailsAndProductInfo
+        //==================================================================================
+        public int AddCart(OrderModel model)
+        {
+            List<OrderDetail> orderDetails = new List<OrderDetail>();
+            var customerId = Db.Customers.Where(x => x.IsDeleted == false).SingleOrDefault(x => x.EmailAddress == model.EmailAddress)?.Id;
+            if (customerId != 0)
+            {
+                foreach (var selectedProduct in model.SelectedProducts)
                 {
-                    Id = x.Id,
-                    CustomerId = customerId,
-                    OrderDate = x.OrderDate,
-                    OrderTotal = x.OrderTotal,
-                    ShipDate = x.ShipDate,
-                    OrderDetails = _orderDetailRepo.GetSingleOrderWithDetails(orderId).ToList()
-                })
-            .FirstOrDefault();
+                    var product = Db.Products.Where(x => x.IsDeleted == false).SingleOrDefault(x => x.Id == selectedProduct.ProductId);
+                    if (product != null && (product.UnitsInStock -= selectedProduct.Quantity) >= 0)
+                    {
+                        orderDetails.Add(new OrderDetail
+                        {
+                            ProductId = selectedProduct.ProductId,
+                            Quantity = selectedProduct.Quantity,
+                            UnitCost = product.UnitCost,
+                            LineItemTotal = selectedProduct.Quantity * product.UnitCost
+                        });
+                    }
+                    else return 0;
+                }
+                Db.Orders.Add(new Order
+                {
+                    CustomerId = customerId.Value,
+                    OrderDate = DateTime.Now,
+                    OrderDetails = orderDetails,
+                    OrderTotal = orderDetails.Sum(x => x.Quantity * x.UnitCost),
+                    Status = EnumOrderStatus.NotReadYet.ToString(),
+                    Address = model.Address,
+                    Phone = model.Phone
+                });
+                Db.SaveChanges();
+                return 1;
+            }
+            else return 0;
+        }
+
+        //public int DeleteOrder(int id, bool persist = true)
+        //{
+        //    var order = Db.Orders.Include(x => x.OrderDetails).SingleOrDefault(x => x.Id == id);
+        //    if (order != null)
+        //    {
+        //        order.IsDeleted = true;
+        //        order.OrderDetails.ForEach(x => x.IsDeleted = true);
+        //        Db.SaveChanges();
+        //        return 1;
+        //    }
+        //    else
+        //        return 0;
+        //}
+
+        public IEnumerable<OrderAdminIndex> GetOrderAdminIndex()
+        => Table.Where(o => o.IsDeleted == false).Select(o => new OrderAdminIndex
+        {
+            FullName = o.Customer.FullName,
+            Id = o.Id,
+            OrderDate = o.OrderDate,
+            OrderTotal = o.OrderTotal ?? 0,
+            Status = (EnumOrderStatus)Enum.Parse(typeof(EnumOrderStatus), o.Status)
+        });
+
+        internal IEnumerable<OrderDetailsRelate> GetOrderDetails(IEnumerable<OrderDetail> orderDetails)
+            => orderDetails.Select(od => new OrderDetailsRelate
+            {
+                LineItemTotal = od.LineItemTotal ?? 0,
+                Quantity = od.Quantity,
+                UnitCost = od.UnitCost,
+                ProductName = od.Product.ProductName
+            });
+
+        public OrderAdminDetails GetOrderAdminDetails(int id)
+        {
+            var order = Table.SingleOrDefault(o => o.Id == id);
+            if (order.Status == EnumOrderStatus.NotReadYet.ToString())
+            {
+                Db.Orders.Attach(order);
+                order.Status = EnumOrderStatus.Processing.ToString();
+                Db.SaveChanges();
+            }
+            return Table.Where(o => o.Id == id).Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product).Select(o => new OrderAdminDetails
+                {
+                    FullName = o.Customer.FullName,
+                    OrderDate = o.OrderDate,
+                    OrderTotal = o.OrderTotal,
+                    OrderDetails = GetOrderDetails(o.OrderDetails),
+                    Phone = o.Phone,
+                    Address = o.Address,
+                    Id = o.Id,
+                    Status = (EnumOrderStatus)Enum.Parse(typeof(EnumOrderStatus), o.Status)
+                }).SingleOrDefault();
+        }
+
+
+        public int ChangeStatusOrder(OrderAdminChangeStatus model)
+        {
+            try
+            {
+                var order = Find(model.OrderId);
+                if (order != null)
+                {
+                    order.Status = model.Status.ToString();
+                }
+                Update(order);
+                return 1;
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+
+        }
+
+        //=============================================================================
     }
 }

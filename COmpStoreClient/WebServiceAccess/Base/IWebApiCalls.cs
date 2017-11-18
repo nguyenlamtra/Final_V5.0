@@ -12,6 +12,9 @@ using COmpStore.Models.ViewModels.ProductAdmin;
 using COmpStore.Models.ViewModels.Paging;
 using COmpStore.Models.ViewModels.SubCategoryAdmin;
 using COmpStore.Models.ViewModels.PublisherAdmin;
+using COmpStore.Models.ViewModels.Cart;
+using COmpStore.Models.ViewModels.OrderAdmin;
+using COmpStore.Models.Enum;
 
 namespace COmpStoreClient.WebServiceAccess.Base
 {
@@ -30,21 +33,12 @@ namespace COmpStoreClient.WebServiceAccess.Base
         //Customer Controller
         Task<IList<Customer>> GetCustomersAsync();
         Task<Customer> GetCustomerAsync(int id);
-        //Orders Controller
-        Task<IList<Order>> GetOrdersAsync(int customerId);
-        Task<OrderWithDetailsAndProductInfo> GetOrderDetailsAsync(int customerId, int orderId);
+        
         //Product Controller
         Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId);
         Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync();
         //SearchAsync Controller
         Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm);
-        //Shopping Cart Controller
-        Task<IList<CartRecordWithProductInfo>> GetCartAsync(int customerId);
-        Task<CartRecordWithProductInfo> GetCartRecordAsync(int customerId, int productId);
-        Task<string> AddToCartAsync(int customerId, int productId, int quantity);
-        Task<string> UpdateCartItemAsync(ShoppingCartRecord item);
-        Task RemoveCartItemAsync(int customerId, int shoppingCartRecordId, byte[] timeStamp);
-        Task<int> PurchaseCartAsync(Customer customer);
 
         //===============
         //CategoryController
@@ -81,6 +75,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
         Task<string> UpdateProduct(ProductAdminUpdate model);
         Task<string> DeleteProduct(int id);
         Task<ProductAdminUpdate> GetSingleProduct(int id);
+        Task<string> UpdateIsFeature(int id);
 
         //Admin Controller
         Task<SessionAuth> VerifyAccount(CustomerLogin model);
@@ -88,6 +83,24 @@ namespace COmpStoreClient.WebServiceAccess.Base
 
         //Token
         void SetToken(string token);
+
+        //Cart
+        Task<IEnumerable<CartModel>> GetCartView(int[] ids);
+        Task<string> SaveOrder(OrderModel model);
+
+        //Customer
+        Task<IEnumerable<CustomerAdminIndex>> GetAdminCustomerIndex();
+        Task<CustomerAdminDetails> GetAdminCustomerDetails(int id);
+        Task<string> CreateCustomer(CustomerAdminCreate model);
+        Task<string> UpdateCustomer(CustomerAdminUpdate model);
+        Task<string> DeleteCustomer(int id);
+        Task<CustomerAdminUpdate> GetSingleCustomer(int id);
+
+        //Order
+        Task<IEnumerable<OrderAdminIndex>> GetOrderAdminIndex();
+        Task<OrderAdminDetails> GetOrderAdminDetails(int id);
+        Task<string> ChangeStatusOrder(OrderAdminChangeStatus model);
+
         //===============
     }
 }

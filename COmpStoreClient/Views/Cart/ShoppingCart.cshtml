@@ -1,0 +1,106 @@
+﻿@*@model List<SelectedProduct>*@
+@model OrderModel
+@{
+    ViewData["Title"] = "Cart";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/cart.css" />
+
+<section id="cart_items">
+    <div class="container">
+        <div class="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li class="active">Shopping Cart</li>
+            </ol>
+        </div>
+        <div class="table-responsive cart_info">
+            <form asp-controller="Cart" asp-action="ShoppingCart" method="post">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr class="cart_menu">
+                            <td class="image" width="20%">Item</td>
+                            <td class="description"></td>
+                            <td class="price">Price (VNĐ)</td>
+                            <td class="quantity">Quantity</td>
+                            <td class="total">Total (VNĐ)</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.Products != null)
+                        {
+                            var products = (List<CartModel>)ViewBag.Products;
+                            @for (int i = 0; i < products.Count; i++)
+                            {
+                                var total = products[i].UnitCost * Model.SelectedProducts[i].Quantity;
+                                <tr class="each-cart">
+                                    <td class="cart_product">
+                                        <a href=""><img style="max-width:110px" src="http://localhost:40001/images/@products[i].ProductImage" alt=""></a>
+                                    </td>
+                                    <td class="cart_description">
+                                        <h4><a class="product-name">@products[i].ProductName</a></h4>
+                                        <p>Web ID: @products[i].ProductId</p>
+                                    </td>
+                                    <td class="cart_price" data-price="@products[i].UnitCost">
+                                        <p>@products[i].UnitCost.ToString("#,##")</p>
+                                    </td>
+                                    <td class="cart_quantity">
+                                        <div class="cart_quantity_button">
+                                            <a class="cart_quantity_up" data-max="@products[i].UnitsInStock"> + </a>
+                                            <input class="cart_product_id" type="hidden" asp-for="@Model.SelectedProducts[i].ProductId" />
+                                            <input class="cart_quantity_input number-input" readonly asp-for="@Model.SelectedProducts[i].Quantity" type="text" autocomplete="off" size="2">
+                                            <a class="cart_quantity_down"> - </a>
+                                        </div>
+                                    </td>
+                                    <td class="cart_total">
+                                        <p class="cart_total_price" data-total="@total">@total.ToString("#,##")</p>
+                                    </td>
+                                    <td class="cart_delete">
+                                        <a class="cart_quantity_delete" data-id="@products[i].ProductId"><i class="fa fa-times"></i></a>
+                                    </td>
+                                </tr>
+
+                            }
+                        }
+                        <tr>
+                            <td colspan="3"></td>
+                            <td colspan="1" class="total-custom">Total</td>
+
+                            <td colspan="2">
+                                <span class="total-custom final_total"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" align="center"><h4>Phone Number</h4></td>
+                            <td colspan="5">
+                                <textarea asp-for="Phone" rows="1"></textarea>
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" align="center"><h4>Address</h4></td>
+                            <td colspan="5">
+                                <textarea asp-for="Address" rows="2"></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1"></td>
+                            <td colspan="5" class="text-center">
+                                <button type="submit" class="btn btn-danger btn btn-order">Order</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+
+        </div>
+    </div>
+</section> <!--/#cart_items-->
+
+
+@section Scripts{
+    <script src="~/js/cart.js"></script>
+}
+

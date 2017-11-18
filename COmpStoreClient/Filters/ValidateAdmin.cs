@@ -1,5 +1,4 @@
-﻿using COmpStoreClient.Authentication;
-using COmpStoreClient.Extension;
+﻿using COmpStoreClient.Extension;
 using COmpStoreClient.WebServiceAccess.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

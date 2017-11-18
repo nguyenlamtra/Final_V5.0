@@ -39,7 +39,7 @@
                                         <img src="http://localhost:40001/images/@item.ProductImage" class="img-responsive"  alt="" />
                                         <h2>@item.UnitCost.ToString("#,##0 VNĐ")</h2>
                                         <p>@item.ProductName</p>
-                                        <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                        <a class="btn btn-default add-to-cart" data-id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                     </div>
                                 </div>
                             </div>
@@ -409,7 +409,31 @@
         </div>
     </div>
 </section>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.add-to-cart').on('click', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '/Cart/AddToCart',
+                    data: { productId: id },
+                    type: 'post',
+                    success: function (data) {
+                        if (data) {
+                            alert('Success');
+                        } else {
+                            console.log('error')
+                        }
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                })
+            })
+        })
+    </script>
 
+}
 
 
 

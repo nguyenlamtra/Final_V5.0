@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using COmpStoreClient.Configuration;
 using COmpStoreClient.WebServiceAccess;
 using COmpStoreClient.WebServiceAccess.Base;
-using COmpStoreClient.Authentication;
 using COmpStoreClient.Filters;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
@@ -38,7 +37,6 @@ namespace COmpStoreClient
             services.AddSingleton(_ => Configuration);
             services.AddSingleton<IWebServiceLocator, WebServiceLocator>();
             services.AddSingleton<IWebApiCalls, WebApiCalls>();
-            services.AddSingleton<IAuthHelper, AuthHelper>();
             services.AddMvc();
             //services.AddMvc(config => {
             //    config.Filters.Add(
@@ -57,25 +55,22 @@ namespace COmpStoreClient
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                app.UseExceptionHandler(configure =>
-                {
-                    configure.Run(async context =>
-                    {
-                        var ex = context.Features
-                                        .Get<IExceptionHandlerFeature>()
-                                        .Error;
-                        var a = ex.GetType();
-                        if (ex.GetType() == typeof(WebException))
-                        {
-                            context.Response.Redirect("Admin/Login");
-                        }
-                        else
-                        {
-                            context.Response.Redirect("Admin/Error");
-                        }
-
-                    });
-                });
+                //app.UseExceptionHandler(configure =>
+                //{
+                //    configure.Run(async context =>
+                //    {
+                //        var ex = context.Features
+                //                        .Get<IExceptionHandlerFeature>()
+                //                        .Error;
+                //        var a = ex.GetType();
+                //        if (ex.GetType() == typeof(WebException))
+                //        {
+                //            context.Response.Redirect("/Admin/Login");
+                //        }
+                        
+                //    });
+                //});
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -88,7 +83,7 @@ namespace COmpStoreClient
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Admin}/{action=Index}/{id?}");
+                    template: "{controller=Admin}/{action=Login}/{id?}");
             });
         }
     }

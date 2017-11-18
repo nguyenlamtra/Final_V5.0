@@ -14,7 +14,7 @@ namespace COmpStore.DAL.Repos.Interfaces
         //=======
         IEnumerable<CategoryAdminIndex> GetAdminCategoryIndex();
         CategoryAdminDetails GetAdminCategoryDetails(int id);
-
+        int DeleteCategory(int id, bool persist = true);
         //=======
     }
 }

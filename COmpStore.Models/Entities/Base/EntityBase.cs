@@ -13,5 +13,7 @@ namespace COmpStore.Models.Entities.Base
 
         [Timestamp]
         public byte[] TimeStamp { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

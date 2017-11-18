@@ -100,7 +100,6 @@ namespace COmpStoreApi
             services.AddScoped<IPublisherRepo,PublisherRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<ICustomerRepo, CustomerRepo>();
-            services.AddScoped<IShoppingCartRepo, ShoppingCartRepo>();
             services.AddScoped<IOrderRepo, OrderRepo>();
             services.AddScoped<IOrderDetailRepo, OrderDetailRepo>();
         }

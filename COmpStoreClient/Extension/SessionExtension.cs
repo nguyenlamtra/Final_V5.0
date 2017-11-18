@@ -1,4 +1,5 @@
 ﻿using COmpStore.Models.ViewModels;
+using COmpStore.Models.ViewModels.Cart;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -10,15 +11,6 @@ namespace COmpStoreClient.Extension
 {
     public static class SessionExtensions
     {
-        public static void SetToken(this ISession session, string token)
-        {
-            session.SetString("token", token);
-        }
-
-        public static string GetToken(this ISession session)
-        {
-            return session.GetString("token");
-        }
         public static void SetAuthSession(this ISession session, SessionAuth sessionAuth)
         {
             session.SetString("auth", JsonConvert.SerializeObject(sessionAuth));
@@ -32,40 +24,22 @@ namespace COmpStoreClient.Extension
             }
             return JsonConvert.DeserializeObject<SessionAuth>(data);
         }
-        #region cart
-        //public static List<SelectedProduct>
-        //   GetSession(this ISession session, string key)
-        //{
-        //    var data = session.GetString(key);
-        //    if (data == null)
-        //    {
-        //        return new List<SelectedProduct>();
-        //    }
 
-        //    return JsonConvert.DeserializeObject<List<SelectedProduct>>(data);
-        //}
+        public static void SetSelectedProducts(this ISession session, List<SelectedProduct> selectedProducts)
+        {
+            session.SetString("selectedProducts", JsonConvert.SerializeObject(selectedProducts));
+        }
 
-        //public static void SetSession(this ISession session, string key, object value)
-        //{
-        //    session.SetString(key, JsonConvert.SerializeObject(value));
-        //}
+        public static List<SelectedProduct>
+           GetSelectedProducts(this ISession session)
+        {
+            var data = session.GetString("selectedProducts");
+            if (data == null)
+            {
+                return new List<SelectedProduct>();
+            }
 
-        //public static void SetSelectedProducts(this ISession session, List<SelectedProduct> selectedProducts)
-        //{
-        //    session.SetString("selectedProducts", JsonConvert.SerializeObject(selectedProducts));
-        //}
-
-        //public static List<SelectedProduct>
-        //   GetSelectedProducts(this ISession session)
-        //{
-        //    var data = session.GetString("selectedProducts");
-        //    if (data == null)
-        //    {
-        //        return new List<SelectedProduct>();
-        //    }
-
-        //    return JsonConvert.DeserializeObject<List<SelectedProduct>>(data);
-        //}
-        #endregion
+            return JsonConvert.DeserializeObject<List<SelectedProduct>>(data);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace COmpStore.DAL.Repos
         {
         }
         public override IEnumerable<SubCategory> GetAll()
-           => Table.OrderBy(x => x.SubCategoryName);
+           => Table.Where(x => x.IsDeleted == false).OrderBy(x => x.SubCategoryName);
 
         public override IEnumerable<SubCategory> GetRange(int skip, int take)
             => GetRange(Table.OrderBy(x => x.SubCategoryName), skip, take);
@@ -39,7 +39,7 @@ namespace COmpStore.DAL.Repos
            };
 
         public IEnumerable<SubCategoryAndCategoryBase> GetSubCategoriesForCategory(int id)
-            => Table
+            => Table.Where(x => x.IsDeleted == false)
                 .Where(s => s.CategoryId == id)
                 .Include(s => s.Category)
                 .Select(item => GetRecord(item, item.Category))
@@ -47,21 +47,21 @@ namespace COmpStore.DAL.Repos
 
 
         public IEnumerable<SubCategoryAndCategoryBase> GetAllWithCategoryName()
-            => Table
+            => Table.Where(x => x.IsDeleted == false)
                 .Include(p => p.Category)
                 .Select(item => GetRecord(item, item.Category))
                 .OrderBy(x => x.SubCategoryName);
 
 
         public SubCategoryAndCategoryBase GetOneWithCategoryName(int id)
-            => Table
+            => Table.Where(x => x.IsDeleted == false)
                 .Where(p => p.Id == id)
                 .Include(p => p.Category)
                 .Select(item => GetRecord(item, item.Category))
                 .SingleOrDefault();
 
         public IEnumerable<SubCategoryAndCategoryBase> Search(string searchString)
-            => Table
+            => Table.Where(x => x.IsDeleted == false)
                 .Where(p =>
                    p.SubCategoryName.ToLower().Contains(searchString.ToLower()))
                 .Include(p => p.Category)
@@ -70,7 +70,7 @@ namespace COmpStore.DAL.Repos
         //======================================================================================
 
         public IEnumerable<SubCategoryAdminIndex> GetSubCategoryAdminIndex()
-        => Table.Select(s => new SubCategoryAdminIndex
+        => Table.Where(x => x.IsDeleted == false).Select(s => new SubCategoryAdminIndex
         {
             Id = s.Id,
             Name = s.SubCategoryName,
@@ -78,7 +78,7 @@ namespace COmpStore.DAL.Repos
         });
 
         internal IEnumerable<ProductRelate> GetProRecord(IEnumerable<Product> pro)
-           => pro.Select(p => new ProductRelate()
+           => pro.Where(x => x.IsDeleted == false).Select(p => new ProductRelate()
            {
                ProductName = p.ProductName,
                Id = p.Id,
@@ -86,7 +86,7 @@ namespace COmpStore.DAL.Repos
            });
 
         public SubCategoryAdminDetails GetSubCategoryAdminDetails(int id)
-        => Table.Select(s => new SubCategoryAdminDetails
+        => Table.Where(x => x.IsDeleted == false).Select(s => new SubCategoryAdminDetails
         {
             Id = s.Id,
             CategoryName = s.Category.CategoryName,
@@ -94,12 +94,26 @@ namespace COmpStore.DAL.Repos
             Products = GetProRecord(s.Products)
         }).SingleOrDefault(x => x.Id == id);
 
-        public IEnumerable<SubCategoryCombobox> GetSubCategoryCombobox() => Table.Select(s => new SubCategoryCombobox
-        {
-            Id = s.Id,
-            Name = s.SubCategoryName
-        });
+        public IEnumerable<SubCategoryCombobox> GetSubCategoryCombobox()
+            => Table.Where(x => x.IsDeleted == false).Select(s => new SubCategoryCombobox
+            {
+                Id = s.Id,
+                Name = s.SubCategoryName
+            });
 
+        public int DeleteSubCategory(int id, bool persist = true)
+        {
+            var subCategory = Db.SubCategories.Include(x => x.Products).SingleOrDefault(x => x.Id == id);
+            if (subCategory != null)
+            {
+                subCategory.IsDeleted = true;
+                subCategory.Products.ForEach(x => x.IsDeleted = true);
+                Db.SaveChanges();
+                return 1;
+            }
+            else
+                return 0;
+        }
         //=======================================================================================
     }
 }

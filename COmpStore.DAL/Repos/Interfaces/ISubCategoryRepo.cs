@@ -18,6 +18,7 @@ namespace COmpStore.DAL.Repos.Interfaces
         IEnumerable<SubCategoryAdminIndex> GetSubCategoryAdminIndex();
         SubCategoryAdminDetails GetSubCategoryAdminDetails(int id);
         IEnumerable<SubCategoryCombobox> GetSubCategoryCombobox();
+        int DeleteSubCategory(int id, bool persist = true);
         //=================================================================================================
     }
 }

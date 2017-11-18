@@ -15,6 +15,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using COmpStore.Models.Entities;
 using COmpStoreApi.Helper;
+using COmpStore.Models.ViewModels.Cart;
 
 namespace COmpStoreApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace COmpStoreApi.Controllers
         public IEnumerable<ProductAndSubCategoryBase> Get()
             => Repo.GetAllWithSubCategoryName().ToList();
         //[Route("[controller]/[action]")]
-       
+
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -188,6 +189,34 @@ namespace COmpStoreApi.Controllers
                 return 0;
             }
         }
+
+        [HttpGet("cart/{id}")]
+        public CartModel GetCartView(int id)
+        {
+            try
+            {
+                return Repo.GetCartView(id);
+            }
+            catch(Exception e)
+            {
+                Console.Write(e.ToString());
+                return null;
+            }
+        } 
+
+        [HttpPut("admin/change-isfeature")]
+        public int ChangeIsFeature([FromBody]ProductAdminUpdateIsFeature model)
+        {
+            var product = Repo.Find(model.Id);
+            if (product != null)
+            {
+                product.IsFeatured = !product.IsFeatured;
+                Repo.Update(product);
+                return 1;
+            }
+            return 0;
+        }
+
         //================================================================================================================
     }
 }

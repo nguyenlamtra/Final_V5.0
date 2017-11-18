@@ -20,18 +20,9 @@ namespace COmpStoreClient.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            IList<CategoryAdminIndex> categorys;
-            
-            categorys = await _webApiCalls.GetAdminCategoryIndex();
-            return View(categorys);
-        }
+        public async Task<IActionResult> Index() => View(await _webApiCalls.GetAdminCategoryIndex());
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         public async Task<IActionResult> Create(CategoryAdminCreate model)

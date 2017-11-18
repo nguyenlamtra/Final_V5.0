@@ -71,20 +71,6 @@ namespace COmpStore.DAL.EF
                 entity.Property(e => e.CurrentPrice).HasColumnType("money");
             });
 
-            modelBuilder.Entity<ShoppingCartRecord>(entity =>
-            {
-                entity.HasIndex(e => new { ShoppingCartRecordId = e.Id, e.ProductId, e.CustomerId })
-                .HasName("IX_ShoppingCart").IsUnique();
-
-                entity.Property(e => e.DateCreated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("getdate()");
-
-                entity.Property(e => e.Quantity)
-                    .ValueGeneratedNever()
-                    .HasDefaultValue(1);
-            });
-
         }
 
         public DbSet<Category> Categories { get; set; }
@@ -94,8 +80,5 @@ namespace COmpStore.DAL.EF
         public DbSet<Order> Orders { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ShoppingCartRecord> ShoppingCartRecords { get; set; }
-
-
     }
 }

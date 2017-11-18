@@ -19,17 +19,9 @@ namespace COmpStoreClient.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            IList<PublisherAdminIndex> pubs;
-            pubs = await _webApiCalls.GetAdminPublisherIndex();
-            return View(pubs);
-        }
+        public async Task<IActionResult> Index() => View(await _webApiCalls.GetAdminPublisherIndex());
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         public async Task<IActionResult> Create(PublisherAdminCreate model)
@@ -47,7 +39,11 @@ namespace COmpStoreClient.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var publisher = await _webApiCalls.GetSinglePublisher(id);
-            return View(publisher);
+
+            if (publisher != null)
+                return View(publisher);
+            else
+                return RedirectToAction("Index");
         }
 
         [HttpPost]

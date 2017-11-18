@@ -28,6 +28,8 @@ namespace COmpStore.DAL.Migrations
                     b.Property<string>("CategoryName")
                         .HasMaxLength(50);
 
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<byte[]>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
@@ -48,6 +50,8 @@ namespace COmpStore.DAL.Migrations
 
                     b.Property<string>("FullName")
                         .HasMaxLength(50);
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -74,7 +78,12 @@ namespace COmpStore.DAL.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Address")
+                        .HasMaxLength(100);
+
                     b.Property<int>("CustomerId");
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
@@ -86,10 +95,15 @@ namespace COmpStore.DAL.Migrations
                         .HasColumnType("money")
                         .HasComputedColumnSql("StoreComp.GetOrderTotal([Id])");
 
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20);
+
                     b.Property<DateTime>("ShipDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<string>("Status");
 
                     b.Property<byte[]>("TimeStamp")
                         .IsConcurrencyToken()
@@ -106,6 +120,8 @@ namespace COmpStore.DAL.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<decimal?>("LineItemTotal")
                         .ValueGeneratedOnAddOrUpdate()
@@ -144,6 +160,8 @@ namespace COmpStore.DAL.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(3800);
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<bool>("IsFeatured");
 
@@ -184,6 +202,8 @@ namespace COmpStore.DAL.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<string>("PublisherName")
                         .HasMaxLength(50);
 
@@ -196,48 +216,14 @@ namespace COmpStore.DAL.Migrations
                     b.ToTable("Publishers","StoreComp");
                 });
 
-            modelBuilder.Entity("COmpStore.Models.Entities.ShoppingCartRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CustomerId");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<decimal>("LineItemTotal");
-
-                    b.Property<int>("ProductId");
-
-                    b.Property<int>("Quantity")
-                        .HasDefaultValue(1);
-
-                    b.Property<byte[]>("TimeStamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("Id", "ProductId", "CustomerId")
-                        .IsUnique()
-                        .HasName("IX_ShoppingCart");
-
-                    b.ToTable("ShoppingCartRecords","StoreComp");
-                });
-
             modelBuilder.Entity("COmpStore.Models.Entities.SubCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("CategoryId");
+
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("SubCategoryName")
                         .HasMaxLength(50);
@@ -284,19 +270,6 @@ namespace COmpStore.DAL.Migrations
                     b.HasOne("COmpStore.Models.Entities.SubCategory", "SubCategory")
                         .WithMany("Products")
                         .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("COmpStore.Models.Entities.ShoppingCartRecord", b =>
-                {
-                    b.HasOne("COmpStore.Models.Entities.Customer", "Customer")
-                        .WithMany("ShoppingCartRecords")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("COmpStore.Models.Entities.Product", "Product")
-                        .WithMany("ShoppingCartRecords")
-                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

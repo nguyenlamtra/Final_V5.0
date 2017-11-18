@@ -20,7 +20,7 @@
                         ids.push($(this).data('id'));
                     });
                     $.ajax({
-                        url: '/AdminPublisher/Delete',
+                        url: '/AdminProduct/Delete',
                         type: 'post',
                         data: { 'ids': ids },
                         success: function (result) {

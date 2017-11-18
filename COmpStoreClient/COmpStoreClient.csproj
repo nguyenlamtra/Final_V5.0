@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\Croppie\**" />
+    <Content Remove="wwwroot\lib\Croppie\**" />
+    <EmbeddedResource Remove="wwwroot\lib\Croppie\**" />
+    <None Remove="wwwroot\lib\Croppie\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
   </ItemGroup>
 
@@ -36,7 +43,6 @@
     <None Include="Views\AdminCategory\Index.cshtml" />
     <None Include="Views\AdminCategory\Update.cshtml" />
     <None Include="Views\AdminProduct\Create.cshtml" />
-    <None Include="Views\AdminProduct\Details.cshtml" />
     <None Include="Views\AdminProduct\Index.cshtml" />
     <None Include="Views\AdminProduct\Update.cshtml" />
     <None Include="Views\AdminPublisher\Create.cshtml" />

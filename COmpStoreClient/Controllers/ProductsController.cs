@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using COmpStoreClient.WebServiceAccess.Base;
 using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.Base;
+using COmpStore.Models.ViewModels.Cart;
+using COmpStoreClient.Extension;
 
 namespace COmpStoreClient.Controllers
 {
@@ -28,12 +30,6 @@ namespace COmpStoreClient.Controllers
         public ActionResult Index()
         {
             return RedirectToAction(nameof(Featured));
-        }
-
-        public ActionResult Details(int id)
-        {
-            return RedirectToAction(nameof(CartController.AddToCart), nameof(CartController).Replace("Controller", ""),
-                new { customerId = ViewBag.CustomerId, productId = id, cameFromProducts = true });
         }
 
         internal async Task<IActionResult> GetListOfProducts(
@@ -111,5 +107,7 @@ namespace COmpStoreClient.Controllers
             ViewBag.Featured = false;
             return await GetListOfProducts(searchString: searchString);
         }
+
+        
     }
 }

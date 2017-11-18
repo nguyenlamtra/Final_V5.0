@@ -43,7 +43,10 @@ namespace COmpStoreClient.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var sub = await _webApiCalls.GetSingleSubCategory(id);
-            return View(sub);
+            if (sub != null)
+                return View(sub);
+            else
+                return RedirectToAction("Index","AdminCategory");
         }
 
         [HttpPost]
@@ -76,7 +79,7 @@ namespace COmpStoreClient.Controllers
             if (model != null)
                 return View(model);
             else
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","AdminCategory");
         }
     }
 }
