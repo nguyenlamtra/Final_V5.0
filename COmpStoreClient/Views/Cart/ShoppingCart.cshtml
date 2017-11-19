@@ -2,7 +2,7 @@
 @model OrderModel
 @{
     ViewData["Title"] = "Cart";
-    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="stylesheet" href="~/css/cart.css" />
 
@@ -10,7 +10,7 @@
     <div class="container">
         <div class="breadcrumbs">
             <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
+                <li><a href="/Products/Index">Home</a></li>
                 <li class="active">Shopping Cart</li>
             </ol>
         </div>
@@ -36,7 +36,7 @@
                                 var total = products[i].UnitCost * Model.SelectedProducts[i].Quantity;
                                 <tr class="each-cart">
                                     <td class="cart_product">
-                                        <a href=""><img style="max-width:110px" src="http://localhost:40001/images/@products[i].ProductImage" alt=""></a>
+                                        <a><img style="max-width:110px" src="http://localhost:40001/images/@products[i].ProductImage" alt=""></a>
                                     </td>
                                     <td class="cart_description">
                                         <h4><a class="product-name">@products[i].ProductName</a></h4>

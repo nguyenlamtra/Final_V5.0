@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using COmpStore.Models.Entities;
 using COmpStore.Models.ViewModels;
 using COmpStore.Models.ViewModels.Base;
-using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.CategoryAdmin;
 using COmpStore.Models.ViewModels.Customer;
 using COmpStore.Models.ViewModels.ProductAdmin;
@@ -33,12 +32,13 @@ namespace COmpStoreClient.WebServiceAccess.Base
         //Customer Controller
         Task<IList<Customer>> GetCustomersAsync();
         Task<Customer> GetCustomerAsync(int id);
-        
+       
         //Product Controller
         Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId);
-        Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync();
+        Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync(int pageNumber);
         //SearchAsync Controller
         Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm);
+        
 
         //===============
         //CategoryController
@@ -105,3 +105,31 @@ namespace COmpStoreClient.WebServiceAccess.Base
         //===============
     }
 }
+
+
+
+////CategoryController
+//Task<IList<Category>> GetCategoriesAsync();
+//Task<IList<Product>> GetAllProductWithSubCategoryNamAsync();
+//Task<Category> GetCategoryAsync(int id);
+//Task<IList<SubCategory>> GetSubCategoriesAsync();
+//Task<SubCategory> GetSubCategoryAsync(int id);
+//Task<IList<Publisher>> GetPublishersAsync();
+//Task<Publisher> GetPublisherAsync(int id);
+////Task<IList<ProductAndSubCategoryBase>> GetProductsForSubCategoryAsync(int subcategoryId);
+////Task<IList<ProductAndPublisherBase>> GetProductsForPublisherAsync(int publisherId);
+
+////Product Controller
+////Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId);
+////Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync(int pageNumber);
+
+////===============
+//Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId);
+//Task<PageOutput<ProductAndSubCategoryBase>> GetFeaturedProductsAsync(int pageNumber);
+//Task<PageOutput<ProductAndSubCategoryBase>> SearchAsync(string searchTerm, int pageNumber);
+//Task<PageOutput<ProductAndSubCategoryBase>> GetProductsForSubCategoryAsync(int subcategoryId, int pageNumber);
+//Task<PageOutput<ProductAndSubCategoryBase>> GetProductsForPublisherAsync(int publisherId);
+////===============
+
+////SearchAsync Controller
+////Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm);

@@ -1,5 +1,4 @@
 ﻿using COmpStore.Models.Entities;
-using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels;
 using COmpStore.Models.ViewModels.Base;
 using COmpStore.Models.ViewModels.CategoryAdmin;
@@ -28,36 +27,7 @@ namespace COmpStoreClient.WebServiceAccess
         {
         }
 
-        //Cart 
-        public async Task<string> AddToCartAsync(int customerId, int productId, int quantity)
-        {
-            //http://localhost:40001/api/shoppingcart/{customerId} HTTPPost
-            //Note: ProductId and Quantity in the body
-            //http://localhost:40001/api/shoppingcart/0 {"ProductId":22,"Quantity":2}
-            //		Content-Type:application/json
-            string uri = $"{CartBaseUri}{customerId}";
-            string json = $"{{\"ProductId\":{productId},\"Quantity\":{quantity}}}";
-            return await SubmitPostRequestAsync(uri, json);
-        }
-        public async Task<int> PurchaseCartAsync(Customer customer)
-        {
-            //Purchase: http://localhost:40001/api/shoppingcart/{customerId}/buy HTTPPost
-            //Note: Customer in the body
-            //{ "Id":1,"FullName":"Super Spy","EmailAddress":"spy@secrets.com"}
-            //  http://localhost:40001/api/shoppingcart/0/buy 
-            var json = JsonConvert.SerializeObject(customer);
-            var uri = $"{CartBaseUri}{customer.Id}/buy";
-            return int.Parse(await SubmitPostRequestAsync(uri, json));
-        }
 
-        public async Task RemoveCartItemAsync(int customerId, int shoppingCartRecordId, byte[] timeStamp)
-        {
-            //Remove Cart Item: http://localhost:40001/api/shoppingcart/{customerId}/{id}/{TimeStamp} HTTPDelete
-            //    http://localhost:40001/api/shoppingcart/0/0/AAAAAAAA1Uc=
-            var timeStampString = JsonConvert.SerializeObject(timeStamp);
-            var uri = $"{CartBaseUri}{customerId}/{shoppingCartRecordId}/{timeStampString}";
-            await SubmitDeleteRequestAsync(uri);
-        }
 
         //Categories
         public async Task<IList<Category>> GetCategoriesAsync()
@@ -112,7 +82,7 @@ namespace COmpStoreClient.WebServiceAccess
             var uri = $"{PublisherBaseUri}{publisherId}/products";
             return await GetItemListAsync<ProductAndPublisherBase>(uri);
         }
-        
+
         //Customers
         public async Task<IList<Customer>> GetCustomersAsync()
         {
@@ -126,23 +96,18 @@ namespace COmpStoreClient.WebServiceAccess
             return await GetItemAsync<Customer>($"{CustomerBaseUri}{id}");
         }
         //Products
-        public async Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync()
+        public async Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync(int pageNumber = 1)
         {
             // http://localhost:40001/api/product/featured
-            return await GetItemListAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}featured");
+
+            return await GetItemListAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}featured?pageNumber={pageNumber}&pageSize=6");
         }
         public async Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId)
         {
             // http://localhost:40001/api/product/{id}
             return await GetItemAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}{productId}");
         }
-        //Orders
-        public async Task<IList<Order>> GetOrdersAsync(int customerId)
-        {
-            //Get Order History: http://localhost:40001/api/orders/{customerId}
-            return await GetItemListAsync<Order>($"{OrdersBaseUri}{customerId}");
-        }
-      
+       
         //Search
         public async Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm)
         {
@@ -454,6 +419,307 @@ namespace COmpStoreClient.WebServiceAccess
             return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
         }
 
+        //public async Task<PageOutput<ProductAndSubCategoryBase>> GetFeaturedProductsAsync(int pageNumber)
+        //{
+        //    var uri =  $"{ProductBaseUri}featured?pageNumber={pageNumber}";
+        //    return await GetItemAsync<PageOutput<ProductAndSubCategoryBase>>(uri);
+        //}
+
+        //public async Task<PageOutput<ProductAndSubCategoryBase>> SearchAsync(string searchTerm, int pageNumber)
+        //{
+        //    var uri = $"{ServiceAddress}api/search/{searchTerm}/{pageNumber}";
+        //    return await GetItemAsync<PageOutput<ProductAndSubCategoryBase>>(uri);
+        //}
+
+        //public async Task<PageOutput<ProductAndSubCategoryBase>> GetProductsForSubCategoryAsync(int subcategoryId, int pageNumber)
+        //{
+        //    var uri = $"{SubCategoryBaseUri}{subcategoryId}/products/{pageNumber}";
+        //    return await GetItemAsync<PageOutput<ProductAndSubCategoryBase>>(uri);
+        //}
+
+        //public async Task<PageOutput<ProductAndSubCategoryBase>> GetProductsForPublisherAsync(int publisherId)
+        //{
+        //    var uri = $"{PublisherBaseUri}{publisherId}/products";
+        //    return await GetItemAsync<PageOutput<ProductAndSubCategoryBase>>(uri);
+        //}
+
         //===========================================================================================================
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////Cart 
+//public async Task<string> AddToCartAsync(int customerId, int productId, int quantity)
+//{
+//    //http://localhost:40001/api/shoppingcart/{customerId} HTTPPost
+//    //Note: ProductId and Quantity in the body
+//    //http://localhost:40001/api/shoppingcart/0 {"ProductId":22,"Quantity":2}
+//    //		Content-Type:application/json
+//    string uri = $"{CartBaseUri}{customerId}";
+//    string json = $"{{\"ProductId\":{productId},\"Quantity\":{quantity}}}";
+//    return await SubmitPostRequestAsync(uri, json);
+//}
+//public async Task<int> PurchaseCartAsync(Customer customer)
+//{
+//    //Purchase: http://localhost:40001/api/shoppingcart/{customerId}/buy HTTPPost
+//    //Note: Customer in the body
+//    //{ "Id":1,"FullName":"Super Spy","EmailAddress":"spy@secrets.com"}
+//    //  http://localhost:40001/api/shoppingcart/0/buy 
+//    var json = JsonConvert.SerializeObject(customer);
+//    var uri = $"{CartBaseUri}{customer.Id}/buy";
+//    return int.Parse(await SubmitPostRequestAsync(uri, json));
+//}
+
+//public async Task RemoveCartItemAsync(int customerId, int shoppingCartRecordId, byte[] timeStamp)
+//{
+//    //Remove Cart Item: http://localhost:40001/api/shoppingcart/{customerId}/{id}/{TimeStamp} HTTPDelete
+//    //    http://localhost:40001/api/shoppingcart/0/0/AAAAAAAA1Uc=
+//    var timeStampString = JsonConvert.SerializeObject(timeStamp);
+//    var uri = $"{CartBaseUri}{customerId}/{shoppingCartRecordId}/{timeStampString}";
+//    await SubmitDeleteRequestAsync(uri);
+//}
+
+////Categories
+//public async Task<IList<Category>> GetCategoriesAsync()
+//{
+//    //http://localhost:40001/api/category
+//    return await GetItemListAsync<Category>(CategoryBaseUri);
+//}
+//public async Task<IList<Product>> GetAllProductWithSubCategoryNamAsync()
+//{
+//    //http://localhost:40001/api/product
+//    return await GetItemListAsync<Product>(ProductBaseUri);
+//}
+//public async Task<Category> GetCategoryAsync(int id)
+//{
+//    //http://localhost:40001/api/category/{id}
+//    return await GetItemAsync<Category>($"{CategoryBaseUri}{id}");
+//}
+
+//public async Task<IList<SubCategory>> GetSubCategoriesAsync()
+//{
+//    //http://localhost:40001/api/subcategory
+//    return await GetItemListAsync<SubCategory>(SubCategoryBaseUri);
+//}
+//public async Task<SubCategory> GetSubCategoryAsync(int id)
+//{
+//    //http://localhost:40001/api/subcategory/{id}
+//    return await GetItemAsync<SubCategory>($"{SubCategoryBaseUri}{id}");
+//}
+
+//public async Task<IList<Publisher>> GetPublishersAsync()
+//{
+//    //http://localhost:40001/api/publisher
+//    return await GetItemListAsync<Publisher>(PublisherBaseUri);
+//}
+//public async Task<Publisher> GetPublisherAsync(int id)
+//{
+//    //http://localhost:40001/api/Publisher/{id}
+//    return await GetItemAsync<Publisher>($"{PublisherBaseUri}{id}");
+//}
+
+
+//public async Task<IList<ProductAndSubCategoryBase>> GetProductsForSubCategoryAsync(int subcategoryId)
+//{
+//    // http://localhost:40001/api/subcategory/{subcategoryId}/products
+//    var uri = $"{SubCategoryBaseUri}{subcategoryId}/products";
+//    return await GetItemListAsync<ProductAndSubCategoryBase>(uri);
+//}
+
+//public async Task<IList<ProductAndPublisherBase>> GetProductsForPublisherAsync(int publisherId)
+//{
+//    // http://localhost:40001/api/publisher/{publisherId}/products
+//    var uri = $"{PublisherBaseUri}{publisherId}/products";
+//    return await GetItemListAsync<ProductAndPublisherBase>(uri);
+//}
+
+////Customers
+//public async Task<IList<Customer>> GetCustomersAsync()
+//{
+//    //Get All Customers: http://localhost:40001/api/customer
+//    return await GetItemListAsync<Customer>($"{CustomerBaseUri}");
+//}
+//public async Task<Customer> GetCustomerAsync(int id)
+//{
+//    //Get One customer: http://localhost:40001/api/customer/{id}
+//    //http://localhost:40001/api/customer/1
+//    return await GetItemAsync<Customer>($"{CustomerBaseUri}{id}");
+//}
+////Products
+//public async Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync()
+//{
+//    // http://localhost:40001/api/product/featured
+//    return await GetItemListAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}featured");
+//}
+//public async Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId)
+//{
+//    // http://localhost:40001/api/product/{id}
+//    return await GetItemAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}{productId}");
+//}
+////Orders
+//public async Task<IList<Order>> GetOrdersAsync(int customerId)
+//{
+//    //Get Order History: http://localhost:40001/api/orders/{customerId}
+//    return await GetItemListAsync<Order>($"{OrdersBaseUri}{customerId}");
+//}
+
+////Search
+//public async Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm)
+//{
+//    var uri = $"{ServiceAddress}api/search/{searchTerm}";
+//    return await GetItemListAsync<ProductAndSubCategoryBase>(uri);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//public async Task<string> AddToCartAsync(int customerId, int productId, int quantity)
+//{
+//    //http://localhost:40001/api/shoppingcart/{customerId} HTTPPost
+//    //Note: ProductId and Quantity in the body
+//    //http://localhost:40001/api/shoppingcart/0 {"ProductId":22,"Quantity":2}
+//    //		Content-Type:application/json
+//    string uri = $"{CartBaseUri}{customerId}";
+//    string json = $"{{\"ProductId\":{productId},\"Quantity\":{quantity}}}";
+//    return await SubmitPostRequestAsync(uri, json);
+//}
+//public async Task<int> PurchaseCartAsync(Customer customer)
+//{
+//    //Purchase: http://localhost:40001/api/shoppingcart/{customerId}/buy HTTPPost
+//    //Note: Customer in the body
+//    //{ "Id":1,"FullName":"Super Spy","EmailAddress":"spy@secrets.com"}
+//    //  http://localhost:40001/api/shoppingcart/0/buy 
+//    var json = JsonConvert.SerializeObject(customer);
+//    var uri = $"{CartBaseUri}{customer.Id}/buy";
+//    return int.Parse(await SubmitPostRequestAsync(uri, json));
+//}
+
+
+//public async Task RemoveCartItemAsync(int customerId, int shoppingCartRecordId, byte[] timeStamp)
+//{
+//    //Remove Cart Item: http://localhost:40001/api/shoppingcart/{customerId}/{id}/{TimeStamp} HTTPDelete
+//    //    http://localhost:40001/api/shoppingcart/0/0/AAAAAAAA1Uc=
+//    var timeStampString = JsonConvert.SerializeObject(timeStamp);
+//    var uri = $"{CartBaseUri}{customerId}/{shoppingCartRecordId}/{timeStampString}";
+//    await SubmitDeleteRequestAsync(uri);
+//}
+
+////Categories
+//public async Task<IList<Category>> GetCategoriesAsync()
+//{
+//    //http://localhost:40001/api/category
+//    return await GetItemListAsync<Category>(CategoryBaseUri);
+//}
+//public async Task<IList<Product>> GetAllProductWithSubCategoryNamAsync()
+//{
+//    //http://localhost:40001/api/product
+//    return await GetItemListAsync<Product>(ProductBaseUri);
+//}
+//public async Task<Category> GetCategoryAsync(int id)
+//{
+//    //http://localhost:40001/api/category/{id}
+//    return await GetItemAsync<Category>($"{CategoryBaseUri}{id}");
+//}
+
+//public async Task<IList<SubCategory>> GetSubCategoriesAsync()
+//{
+//    //http://localhost:40001/api/subcategory
+//    return await GetItemListAsync<SubCategory>(SubCategoryBaseUri);
+//}
+//public async Task<SubCategory> GetSubCategoryAsync(int id)
+//{
+//    //http://localhost:40001/api/subcategory/{id}
+//    return await GetItemAsync<SubCategory>($"{SubCategoryBaseUri}{id}");
+//}
+
+//public async Task<IList<Publisher>> GetPublishersAsync()
+//{
+//    //http://localhost:40001/api/publisher
+//    return await GetItemListAsync<Publisher>(PublisherBaseUri);
+//}
+//public async Task<Publisher> GetPublisherAsync(int id)
+//{
+//    //http://localhost:40001/api/Publisher/{id}
+//    return await GetItemAsync<Publisher>($"{PublisherBaseUri}{id}");
+//}
+
+
+////public async Task<IList<ProductAndSubCategoryBase>> GetProductsForSubCategoryAsync(int subcategoryId)
+////{
+////    // http://localhost:40001/api/subcategory/{subcategoryId}/products
+////    var uri = $"{SubCategoryBaseUri}{subcategoryId}/products";
+////    return await GetItemListAsync<ProductAndSubCategoryBase>(uri);
+////}
+
+////public async Task<IList<ProductAndPublisherBase>> GetProductsForPublisherAsync(int publisherId)
+////{
+////    // http://localhost:40001/api/publisher/{publisherId}/products
+////    var uri = $"{PublisherBaseUri}{publisherId}/products";
+////    return await GetItemListAsync<ProductAndPublisherBase>(uri);
+////}
+
+////Customers
+//public async Task<IList<Customer>> GetCustomersAsync()
+//{
+//    //Get All Customers: http://localhost:40001/api/customer
+//    return await GetItemListAsync<Customer>($"{CustomerBaseUri}");
+//}
+//public async Task<Customer> GetCustomerAsync(int id)
+//{
+//    //Get One customer: http://localhost:40001/api/customer/{id}
+//    //http://localhost:40001/api/customer/1
+//    return await GetItemAsync<Customer>($"{CustomerBaseUri}{id}");
+//}
+//////Products
+////public async Task<IList<ProductAndSubCategoryBase>> GetFeaturedProductsAsync(int pageNumber = 1)
+////{
+////    // http://localhost:40001/api/product/featured
+
+////    return await GetItemListAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}featured?pageNumber={pageNumber}");
+////}
+//public async Task<ProductAndSubCategoryBase> GetOneProductAsync(int productId)
+//{
+//    // http://localhost:40001/api/product/{id}
+//    return await GetItemAsync<ProductAndSubCategoryBase>($"{ProductBaseUri}{productId}");
+//}
+
+//////Search
+////public async Task<IList<ProductAndSubCategoryBase>> SearchAsync(string searchTerm)
+////{
+////    var uri = $"{ServiceAddress}api/search/{searchTerm}";
+////    return await GetItemListAsync<ProductAndSubCategoryBase>(uri);
+////}

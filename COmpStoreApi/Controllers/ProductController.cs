@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using COmpStore.DAL.Repos.Interfaces;
-using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.Base;
 using COmpStore.Models.ViewModels.ProductAdmin;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +15,8 @@ using System.Text.RegularExpressions;
 using COmpStore.Models.Entities;
 using COmpStoreApi.Helper;
 using COmpStore.Models.ViewModels.Cart;
+using COmpStore.DAL.Helpers;
+using static COmpStore.DAL.Helpers.Enums;
 
 namespace COmpStoreApi.Controllers
 {
@@ -24,16 +25,17 @@ namespace COmpStoreApi.Controllers
     {
         private IProductRepo Repo { get; set; }
         private IHostingEnvironment _hostingEnvironment { get; set; }
-        public ProductController(IProductRepo repo, IHostingEnvironment hostingEnvironment)
+        private readonly IUrlHelper _urlHelper;
+        public ProductController(IProductRepo repo, IUrlHelper urlHelper, IHostingEnvironment hostingEnvironment)
         {
             Repo = repo;
+            _urlHelper = urlHelper;
             _hostingEnvironment = hostingEnvironment;
-        }
 
+        }
         [HttpGet]
         public IEnumerable<ProductAndSubCategoryBase> Get()
             => Repo.GetAllWithSubCategoryName().ToList();
-        //[Route("[controller]/[action]")]
 
 
         [HttpGet("{id}")]
@@ -47,9 +49,58 @@ namespace COmpStoreApi.Controllers
             return new ObjectResult(item);
         }
 
-        [HttpGet("featured")]
-        public IEnumerable<ProductAndSubCategoryBase> GetFeatured()
-            => Repo.GetFeaturedWithSubCategoryName().ToList();
+
+        //public IEnumerable<ProductAndSubCategoryBase> GetFeatured()
+        //    => Repo.GetFeaturedWithSubCategoryName().ToList();
+        [HttpGet("featured", Name = "GetFeatureProducts")]
+        public IActionResult GetFeatureProducts(ProductAndSubResourceParameters productAndSubResourceParameters)
+        {
+
+            var products = Repo.GetFeatureProducts(productAndSubResourceParameters);
+            var previousPageLink = products.HasPrevious ? CreateResourceUri(productAndSubResourceParameters, ResourceUriType.Previous) : null;
+            var nextPageLink = products.HasNext ? CreateResourceUri(productAndSubResourceParameters, ResourceUriType.Next) : null;
+            var paginationMetaData = new
+            {
+                totalCount = products.TotalCount,
+                paseSize = products.PageSise,
+                currentPage = products.CurrentPage,
+                previousPageLink = previousPageLink,
+                nextPageLink = nextPageLink
+
+            };
+            Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetaData));
+            return Ok(products.ToList());
+        }
+        private string CreateResourceUri(ProductAndSubResourceParameters productAndSubResourceParameters, ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.Previous:
+                    return _urlHelper.Link("GetFeatureProducts",
+                            new
+                            {
+                                pageNumber = productAndSubResourceParameters.PageNumber - 1,
+                                pageSize = productAndSubResourceParameters.PageSize
+                            });
+
+                case ResourceUriType.Next:
+
+                    return _urlHelper.Link("GetFeatureProducts",
+                       new
+                       {
+                           pageNumber = productAndSubResourceParameters.PageNumber + 1,
+                           pageSize = productAndSubResourceParameters.PageSize
+                       });
+                default:
+                    return _urlHelper.Link("GetFeatureProducts",
+                           new
+                           {
+                               pageNumber = productAndSubResourceParameters.PageNumber,
+                               pageSize = productAndSubResourceParameters.PageSize
+                           });
+            }
+        }
+
 
         //================================================================================================================
 
@@ -219,3 +270,136 @@ namespace COmpStoreApi.Controllers
         //================================================================================================================
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+//private IProductRepo Repo { get; set; }
+//private IHostingEnvironment _hostingEnvironment { get; set; }
+//private readonly IUrlHelper _urlHelper;
+//public ProductController(IProductRepo repo, IUrlHelper urlHelper, IHostingEnvironment hostingEnvironment)
+//{
+//    Repo = repo;
+//    _urlHelper = urlHelper;
+//    _hostingEnvironment = hostingEnvironment;
+
+//}
+//[HttpGet]
+//public IEnumerable<ProductAndSubCategoryBase> Get()
+//    => Repo.GetAllWithSubCategoryName().ToList();
+
+
+//[HttpGet("{id}")]
+//public IActionResult Get(int id)
+//{
+//    var item = Repo.GetOneWithSubCategoryName(id);
+//    if (item == null)
+//    {
+//        return NotFound();
+//    }
+//    return new ObjectResult(item);
+//}
+
+////[HttpGet("featured", Name = "GetFeatureProducts")]
+////public IActionResult GetFeatureProducts(ProductAndSubResourceParameters productAndSubResourceParameters)
+////{
+
+////    var products = Repo.GetFeatureProducts(productAndSubResourceParameters);
+////    var previousPageLink = products.HasPrevious ? CreateResourceUri(productAndSubResourceParameters, ResourceUriType.Previous) : null;
+////    var nextPageLink = products.HasNext ? CreateResourceUri(productAndSubResourceParameters, ResourceUriType.Next) : null;
+////    var paginationMetaData = new
+////    {
+////        totalCount = products.TotalCount,
+////        paseSize = products.PageSise,
+////        currentPage = products.CurrentPage,
+////        previousPageLink = previousPageLink,
+////        nextPageLink = nextPageLink
+
+////    };
+////    Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetaData));
+////    return Ok(products.ToList());
+////}
+
+//[HttpGet("featured", Name = "GetFeatureProducts")]
+//public IActionResult GetFeatureProducts(int pageNumber = 1, int pageSize = 6)
+//{
+//    var pageOutput = Repo.GetFeatureProducts(pageNumber, pageSize);
+
+//    return Ok(pageOutput);
+//}
+
+//private string CreateResourceUri(ProductAndSubResourceParameters productAndSubResourceParameters, ResourceUriType type)
+//{
+//    switch (type)
+//    {
+//        case ResourceUriType.Previous:
+//            return _urlHelper.Link("GetFeatureProducts",
+//                    new
+//                    {
+//                        pageNumber = productAndSubResourceParameters.PageNumber - 1,
+//                        pageSize = productAndSubResourceParameters.PageSize
+//                    });
+
+//        case ResourceUriType.Next:
+
+//            return _urlHelper.Link("GetFeatureProducts",
+//               new
+//               {
+//                   pageNumber = productAndSubResourceParameters.PageNumber + 1,
+//                   pageSize = productAndSubResourceParameters.PageSize
+//               });
+//        default:
+//            return _urlHelper.Link("GetFeatureProducts",
+//                   new
+//                   {
+//                       pageNumber = productAndSubResourceParameters.PageNumber,
+//                       pageSize = productAndSubResourceParameters.PageSize
+//                   });
+//    }
+//}
+
+
+
+
+
+
+
+
+
+
+
+//private IProductRepo Repo { get; set; }
+//private IHostingEnvironment _hostingEnvironment { get; set; }
+//public ProductController(IProductRepo repo, IHostingEnvironment hostingEnvironment)
+//{
+//    Repo = repo;
+//    _hostingEnvironment = hostingEnvironment;
+//}
+
+//[HttpGet]
+//public IEnumerable<ProductAndSubCategoryBase> Get()
+//    => Repo.GetAllWithSubCategoryName().ToList();
+////[Route("[controller]/[action]")]
+
+
+//[HttpGet("{id}")]
+//public IActionResult Get(int id)
+//{
+//    var item = Repo.GetOneWithSubCategoryName(id);
+//    if (item == null)
+//    {
+//        return NotFound();
+//    }
+//    return new ObjectResult(item);
+//}
+
+//[HttpGet("featured")]
+//public IEnumerable<ProductAndSubCategoryBase> GetFeatured()
+//    => Repo.GetFeaturedWithSubCategoryName().ToList();

@@ -55,6 +55,7 @@
     <None Include="Views\Admin\Error.cshtml" />
     <None Include="Views\Admin\Index.cshtml" />
     <None Include="Views\Admin\Login.cshtml" />
+    <None Include="Views\Shared\Components\Recommended\RecommendView.cshtml" />
     <None Include="wwwroot\images\banner1.svg" />
     <None Include="wwwroot\images\banner2.svg" />
     <None Include="wwwroot\images\banner3.svg" />

@@ -7,6 +7,7 @@
             type: 'post',
             success: function (data) {
                 if (data) {
+                    $('#shop-cart').css('color', '#FE980F');
                     alert('Success');
                 } else {
                     console.log('error')

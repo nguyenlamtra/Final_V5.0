@@ -237,7 +237,7 @@ a#scrollUp {
     }
 
     .mainmenu ul li a {
-        color: #696763;
+        color: #FE980F !important;
         font-family: 'Roboto', sans-serif;
         font-size: 17px;
         font-weight: 300;
@@ -879,7 +879,7 @@ h2.title {
     font-size: 14px;
     font-weight: 400;
     color: #696763;
-    text-transform:uppercase !important;
+    text-transform: uppercase !important;
 }
 
 .productinfo img {
@@ -1178,7 +1178,7 @@ h2.title {
     }
 
     .view-product h3 {
-        background: #FE980F;
+        background: #00ff99 !important;
         bottom: 0;
         color: #FFFFFF;
         font-family: 'Roboto', sans-serif;
@@ -1284,7 +1284,7 @@ h2.title {
 
 
 .cart {
-    background: #FE980F;
+    background: #0099ff !important;
     border: 0 none;
     border-radius: 0;
     color: #FFFFFF;

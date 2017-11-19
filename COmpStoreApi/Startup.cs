@@ -22,6 +22,9 @@ using System.Security.Claims;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.Extensions.PlatformAbstractions;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace COmpStoreApi
 {
@@ -94,8 +97,8 @@ namespace COmpStoreApi
             {
                 options.AddPolicy("Admin", policy =>
                                   policy.RequireClaim(ClaimTypes.Role, "Admin"));
-                options.AddPolicy("User", policy =>
-                                  policy.RequireClaim(ClaimTypes.Role, "User"));
+                options.AddPolicy("Customer", policy =>
+                                  policy.RequireClaim(ClaimTypes.Role, "Customer"));
             });
 
             // Register the Swagger generator, defining one or more Swagger documents
@@ -115,6 +118,13 @@ namespace COmpStoreApi
             services.AddScoped<ICustomerRepo, CustomerRepo>();
             services.AddScoped<IOrderRepo, OrderRepo>();
             services.AddScoped<IOrderDetailRepo, OrderDetailRepo>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(factory =>
+            {
+                var actionContext = factory.GetService<IActionContextAccessor>()
+                                           .ActionContext;
+                return new UrlHelper(actionContext);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

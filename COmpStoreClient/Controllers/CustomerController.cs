@@ -18,6 +18,8 @@ namespace COmpStoreClient.Controllers
             _webApiCalls = webApiCalls;
         }
 
+        public IActionResult Error() => View();
+
         public IActionResult LoginCustomer()
         {
             return View("LoginCustomer", new CustomerModel());

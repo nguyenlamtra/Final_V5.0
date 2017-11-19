@@ -27,7 +27,7 @@ namespace COmpStoreApi.Controllers
 
         //======================
         [HttpPost]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "Customer")]
         public int SaveOrder([FromBody]OrderModel model)
         => Repo.AddCart(model);
 

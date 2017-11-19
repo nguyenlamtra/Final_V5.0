@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using COmpStore.DAL.Repos.Interfaces;
-using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.Base;
 using Microsoft.AspNetCore.Authorization;
 using COmpStore.Models.ViewModels.SubCategoryAdmin;
 using COmpStoreApi.Filters;
 using COmpStore.Models.Entities;
+using COmpStore.Models.ViewModels.Paging;
 
 namespace COmpStoreApi.Controllers
 {
@@ -41,6 +41,10 @@ namespace COmpStoreApi.Controllers
             }
             return new ObjectResult(item);
         }
+        //[HttpGet("{subcategoryId}/products/{pageNumber}")]
+        //public PageOutput<ProductAndSubCategoryBase> GetProductsForSubCategory(int subcategoryId,
+        //    int pageSize = 6, int pageNumber = 1)
+        //    => ProductRepo.GetProductsForSubCategory(subcategoryId,pageSize,pageNumber);
         [HttpGet("{subcategoryId}/products")]
         public IEnumerable<ProductAndSubCategoryBase> GetProductsForSubCategory(int subcategoryId)
             => ProductRepo.GetProductsForSubCategory(subcategoryId).ToList();

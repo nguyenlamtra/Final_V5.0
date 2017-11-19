@@ -8,7 +8,7 @@ using AutoMapper;
 using Newtonsoft.Json;
 using COmpStore.Models.Entities;
 using COmpStore.Models.ViewModels;
-using COmpStore.Models.Entities.ViewModels.Base;
+using COmpStore.Models.ViewModels.Base;
 using COmpStore.Models.ViewModels.Cart;
 using COmpStoreClient.Extension;
 using COmpStoreClient.Exceptions;

@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<Category>
-@{
+@{ 
     List<SubCategory> subcateModel = (List<SubCategory>)ViewData["subcates"];
-    List<PublisherAdminIndex> publisherModel = (List<PublisherAdminIndex>)ViewData["publisher"];
+    List<Publisher> publisherModel = (List<Publisher>)ViewData["publisher"];
+    List<Product> productModel = (List<Product>)ViewData["pros"];
 }
 
 
@@ -56,9 +57,19 @@
                             <a asp-controller="Products"
                                asp-action="PublisherList"
                                asp-route-id="@item.Id">
-                                <span class="pull-right badge pull-right">@item.SumProducts</span>
-                                @item.Name
-                            </a>
+                            @*@foreach (var pro in productModel)
+                            {
+                                if (@pro.PublisherId = @item.Id)
+                                {
+                                    pro.
+                                }
+                            }*@
+
+                                <span class="pull-right badge pull-right">
+
+                                    @item.Products.Count()
+                                </span>
+                            @item.PublisherName</a>
                         </li>
                     }
                 </ul>
