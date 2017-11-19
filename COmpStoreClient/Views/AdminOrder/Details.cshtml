@@ -56,14 +56,14 @@
     <!-- /.col-lg-12 -->
     <div class="col-md-12">
         <div class="panel-body">
-            @if (Model.Status == EnumOrderStatus.Processing)
-            {
-                <div class="form-group">
+            <div class="form-group">
+                @if (Model.Status == EnumOrderStatus.Processing)
+                {
                     <a asp-action="CompleteOrder" asp-controller="AdminOrder" asp-route-orderId="@Model.Id" class="btn btn-primary btn-sm">Hoàn tất</a>
                     <a asp-action="DenyOrder" asp-controller="AdminOrder" asp-route-orderId="@Model.Id" class="btn btn-danger btn-sm">Hủy</a>
-                </div>
-            }
-
+                }
+                <a asp-action="Index" asp-controller="AdminOrder" class="btn btn-default btn-sm">Back</a>
+            </div>
             <div class="table-responsive">
                 <table id="content_table" class="table table-bordered table-hover">
                     <thead>

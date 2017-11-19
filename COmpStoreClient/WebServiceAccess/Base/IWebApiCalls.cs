@@ -79,7 +79,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
 
         //Admin Controller
         Task<SessionAuth> VerifyAccount(CustomerLogin model);
-        Task<string> CheckPermission(string token);
+        //Task<string> CheckPermission(string token);
 
         //Token
         void SetToken(string token);
@@ -95,9 +95,10 @@ namespace COmpStoreClient.WebServiceAccess.Base
         Task<string> UpdateCustomer(CustomerAdminUpdate model);
         Task<string> DeleteCustomer(int id);
         Task<CustomerAdminUpdate> GetSingleCustomer(int id);
+        Task<string> CreateAccountForUser(CustomerCreate model);
 
         //Order
-        Task<IEnumerable<OrderAdminIndex>> GetOrderAdminIndex();
+        Task<PageOutput<OrderAdminIndex>> GetOrderAdminIndex(int pageNumber);
         Task<OrderAdminDetails> GetOrderAdminDetails(int id);
         Task<string> ChangeStatusOrder(OrderAdminChangeStatus model);
 

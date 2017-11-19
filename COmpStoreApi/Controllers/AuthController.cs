@@ -35,32 +35,36 @@ namespace COmpStoreApi.Controllers
             _customerRepo = customerRepo;
         }
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("checkpermission")]
-        [Authorize(Policy ="Admin")]
-        public int Check()
-        {
-            return 1;
-        }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //[Route("checkpermission")]
+        //[Authorize(Policy ="Admin")]
+        //public int Check()
+        //{
+        //    return 1;
+        //}
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("register")]
-        [ValidateForm]
-        public int Register([FromBody] CustomerRegister model)
-        {
-            var customer = new Customer()
-            {
-                EmailAddress = model.EmailAddress,
-                FullName = model.FullName,
-                Password = StringHelper.EncryptPassword(model.Password),
-                Role = model.Role
-            };
+        //[AllowAnonymous]
+        //[HttpPost]
+        //[Route("register")]
+        //[ValidateForm]
+        //public int Register([FromBody] CustomerRegister model)
+        //{
+        //    var customer = new Customer()
+        //    {
+        //        EmailAddress = model.EmailAddress,
+        //        FullName = model.FullName,
+        //        Password = StringHelper.EncryptPassword(model.Password),
+        //        Role = model.Role
+        //    };
 
-            return _customerRepo.Add(customer);
-        }
+        //    return _customerRepo.Add(customer);
+        //}
 
+
+        /// <summary>
+        /// Login
+        /// </summary>
         [AllowAnonymous]
         [HttpPost]
         [Route("login")]
@@ -76,15 +80,15 @@ namespace COmpStoreApi.Controllers
                 var pass = StringHelper.EncryptPassword(model.Password);
                 if (customer.Password == pass)
                 {
-                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("a secret that needs to be at least 16 characters long"));
+                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is the secret keys of Lam And Tra"));
                     var claims = new List<Claim>();
                     claims.Add(new Claim(ClaimTypes.Name, customer.EmailAddress));
                     claims.Add(new Claim(JwtRegisteredClaimNames.Email, customer.EmailAddress));
                     claims.Add(new Claim(ClaimTypes.Role, customer.Role));
 
                     var token = new JwtSecurityToken(
-                        issuer: "your app",
-                        audience: "the client of your app",
+                        issuer: "my app",
+                        audience: "the clients",
                         claims: claims,
                         notBefore: DateTime.Now,
                         expires: DateTime.Now.AddHours(24),

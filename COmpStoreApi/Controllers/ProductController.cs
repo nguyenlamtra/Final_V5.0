@@ -60,7 +60,6 @@ namespace COmpStoreApi.Controllers
 
 
         [HttpGet("admin/update/{id}")]
-        [Authorize(Policy = "Admin")]
         public ProductAdminUpdate GetProductAdminUpdate(int id)
         {
             var product = Repo.Find(id);

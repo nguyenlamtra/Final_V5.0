@@ -292,7 +292,7 @@ namespace COmpStoreClient.WebServiceAccess
         //    return await GetItemListAsync<ProductAdminIndex>(uri);
         //}
 
-        public async Task<PageOutput<ProductAdminIndex>> GetAdminProductIndex(int pageNumber = 1)
+        public async Task<PageOutput<ProductAdminIndex>> GetAdminProductIndex(int pageNumber)
         {
             //Get All product: 
 
@@ -350,11 +350,11 @@ namespace COmpStoreClient.WebServiceAccess
             return JsonConvert.DeserializeObject<SessionAuth>(json);
         }
 
-        public async Task<string> CheckPermission(string token)
-        {
-            var uri = $"{ServiceAddress}api/auth/checkpermission";
-            return await SubmitPostRequestAsync(uri, null);
-        }
+        //public async Task<string> CheckPermission(string token)
+        //{
+        //    var uri = $"{ServiceAddress}api/auth/checkpermission";
+        //    return await SubmitPostRequestAsync(uri, null);
+        //}
 
         public void SetToken(string token)
         {
@@ -424,10 +424,10 @@ namespace COmpStoreClient.WebServiceAccess
             return await GetItemAsync<CustomerAdminUpdate>(uri);
         }
 
-        public async Task<IEnumerable<OrderAdminIndex>> GetOrderAdminIndex()
+        public async Task<PageOutput<OrderAdminIndex>> GetOrderAdminIndex(int pageNumber)
         {
-            var uri = $"{ServiceAddress}api/orders/admin";
-            return await GetItemListAsync<OrderAdminIndex>(uri);
+            var uri = $"{ServiceAddress}api/orders/admin?pageNumber={pageNumber}";
+            return await GetItemAsync<PageOutput<OrderAdminIndex>>(uri);
         }
 
         public async Task<OrderAdminDetails> GetOrderAdminDetails(int id)
@@ -446,6 +446,12 @@ namespace COmpStoreClient.WebServiceAccess
         {
             var uri = $"{ServiceAddress}api/product/admin/change-isfeature";
             return await SubmitPutRequestAsync(uri, JsonConvert.SerializeObject(new ProductAdminUpdateIsFeature { Id = id }));
+        }
+
+        public async Task<string> CreateAccountForUser(CustomerCreate model)
+        {
+            var uri = $"{ServiceAddress}api/customer";
+            return await SubmitPostRequestAsync(uri, JsonConvert.SerializeObject(model));
         }
 
         //===========================================================================================================

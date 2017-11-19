@@ -1,6 +1,7 @@
-﻿@using COmpStore.Models.ViewModels.OrderAdmin
+﻿@using COmpStore.Models.ViewModels.Paging
+@using COmpStore.Models.ViewModels.OrderAdmin
 @using COmpStore.Models.Enum
-    @model IEnumerable<OrderAdminIndex>
+    @model PageOutput<OrderAdminIndex>
     @{
         ViewData["Title"] = "Index";
         Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -29,7 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var order in Model)
+                                @foreach (var order in Model.Items)
                                 {
                                     string classColor = "";
 
@@ -68,6 +69,18 @@
                                 }
                             </tbody>
                         </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <a class="btn btn-default" href="/AdminOrder/Index?pageNumber=@(Model.PageNumber-1)">Previous</a>
+                            }
+                            @if (Model.PageNumber < Model.TotalPage)
+                            {
+                                <a class="btn btn-primary pull-right" href="/AdminOrder/Index?pageNumber=@(Model.PageNumber+1)">Next</a>
+                            }
+                        </div>
                     </div>
                 </div>
                 <!-- /.panel-body -->

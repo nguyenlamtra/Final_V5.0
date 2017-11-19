@@ -7,6 +7,7 @@ using COmpStoreClient.Filters;
 using COmpStoreClient.WebServiceAccess.Base;
 using COmpStore.Models.ViewModels.OrderAdmin;
 using COmpStore.Models.Enum;
+using COmpStore.Models.ViewModels.Paging;
 
 namespace COmpStoreClient.Controllers
 {
@@ -19,8 +20,11 @@ namespace COmpStoreClient.Controllers
             _webApiCalls = webApiCalls;
         }
 
-        public async Task<IActionResult> Index()
-            => View(await _webApiCalls.GetOrderAdminIndex());
+        public async Task<IActionResult> Index(int pageNumber = 1)
+        {
+            var pageOutput = await _webApiCalls.GetOrderAdminIndex(pageNumber);
+            return View(pageOutput);
+        }
 
         public async Task<IActionResult> Details(int id) => View(await _webApiCalls.GetOrderAdminDetails(id));
 

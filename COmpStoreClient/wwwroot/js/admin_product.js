@@ -1,4 +1,19 @@
 ﻿$(document).ready(function () {
+    $('.IsFeature input').on('click', function () {
+        var id = $(this).parents('tr').data('id');
+        $.ajax({
+            url: "/AdminProduct/ChangeIsFeature",
+            data: { "id": id },
+            type:"post",
+            success: function (data) {
+                if (data) console.log(true);
+                else console.log(false);
+            },
+            error: function () {
+                console.log('error');
+            }
+        })
+    })
 
     $('.image-editor').cropit({
         exportZoom: 1,

@@ -7,6 +7,8 @@ using COmpStore.DAL.Repos.Interfaces;
 using COmpStore.Models.ViewModels.Cart;
 using COmpStore.Models.Entities;
 using COmpStore.Models.ViewModels.OrderAdmin;
+using Microsoft.AspNetCore.Authorization;
+using COmpStore.Models.ViewModels.Paging;
 
 namespace COmpStoreApi.Controllers
 {
@@ -25,16 +27,20 @@ namespace COmpStoreApi.Controllers
 
         //======================
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public int SaveOrder([FromBody]OrderModel model)
         => Repo.AddCart(model);
 
         [HttpGet("admin")]
-        public IEnumerable<OrderAdminIndex> GetOrderAdminIndex() => Repo.GetOrderAdminIndex();
+        [Authorize(Policy = "Admin")]
+        public PageOutput<OrderAdminIndex> GetOrderAdminIndex(int pageNumber = 1, int pageSize = 9)
+            => Repo.GetOrderAdminIndex(pageNumber, pageSize);
 
         [HttpGet("admin/{id}")]
         public OrderAdminDetails GetOrderAdminDetails(int id) => Repo.GetOrderAdminDetails(id);
 
         [HttpPut("admin/change-status")]
+        [Authorize(Policy = "Admin")]
         public int ChangeStatusOrder([FromBody]OrderAdminChangeStatus model)
         {
             var order = Repo.Find(model.OrderId);

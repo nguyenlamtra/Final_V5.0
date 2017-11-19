@@ -7,19 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace COmpStoreClient.Filters
 {
-    public class ValidateAdmin : ActionFilterAttribute
+    public class ValidateCustomer : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var _webApiCalls = filterContext.HttpContext.RequestServices.GetService<IWebApiCalls>();
             var authSession = filterContext.HttpContext.Session.GetAuthSession();
-            if (authSession == null || authSession.Role != "Admin")
+            if (authSession == null || authSession.Role != "Customer")
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new RouteValueDictionary
                     {
-                        { "controller", "Admin" },
-                        { "action", "Login" }
+                        { "controller", "Customer" },
+                        { "action", "LoginCustomer" }
                     });
             }
             else

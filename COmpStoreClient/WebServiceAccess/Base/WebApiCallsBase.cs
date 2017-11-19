@@ -1,4 +1,5 @@
 ﻿using COmpStoreClient.Configuration;
+using COmpStoreClient.Exceptions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -191,15 +192,8 @@ namespace COmpStoreClient.WebServiceAccess.Base
 
                     var response = await client.GetAsync(uri);
 
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    {
-                        throw new WebException();
-                    }
+                    CheckResponseStatus(response, uri);
 
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        throw new Exception($"The Call to {uri} failed.  Status code: {response.StatusCode}");
-                    }
                     return await response.Content.ReadAsStringAsync();
                 }
             }
@@ -241,22 +235,15 @@ namespace COmpStoreClient.WebServiceAccess.Base
             }
         }
 
-        protected static async Task<string> ExecuteRequestAndProcessResponse(
+        protected async Task<string> ExecuteRequestAndProcessResponse(
             string uri, Task<HttpResponseMessage> task)
         {
             try
             {
                 var response = await task;
 
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new WebException();
-                }
+                CheckResponseStatus(response, uri);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"The Call to {uri} failed.  Status code: {response.StatusCode}");
-                }
                 //return response.Headers.Location.AbsoluteUri;
                 return await response.Content.ReadAsStringAsync();
             }
@@ -288,11 +275,23 @@ namespace COmpStoreClient.WebServiceAccess.Base
             using (var client = new HttpClient())
             {
                 SetTokenHeader(client);
-                //var requestMessage = new HttpRequestMessage(HttpMethod.Put,uri);
-                //requestMessage.Content = CreateStringContent(json);
-                //var response = await client.SendAsync(requestMessage);
                 Task<HttpResponseMessage> task = client.PutAsync(uri, CreateStringContent(json));
                 return await ExecuteRequestAndProcessResponse(uri, task);
+            }
+        }
+
+        internal void CheckResponseStatus(HttpResponseMessage response,string uri)
+        {
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                if (uri.Contains("admin"))
+                    throw new AuthAdminException();
+                else
+                    throw new AuthCustomerException();
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(response.StatusCode.ToString());
             }
         }
 
@@ -305,10 +304,7 @@ namespace COmpStoreClient.WebServiceAccess.Base
                     SetTokenHeader(client);
                     Task<HttpResponseMessage> deleteAsync = client.DeleteAsync(uri);
                     var response = await deleteAsync;
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        throw new Exception(response.StatusCode.ToString());
-                    }
+                    CheckResponseStatus(response, uri);
                     return response.Content.ReadAsStringAsync().Result;
                 }
             }

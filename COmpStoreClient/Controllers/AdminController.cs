@@ -8,6 +8,7 @@ using COmpStore.Models.ViewModels.Customer;
 using COmpStoreClient.Extension;
 using COmpStoreClient.Filters;
 using COmpStoreClient.WebServiceAccess;
+using COmpStore.Models.Enum;
 
 namespace COmpStoreClient.Controllers
 {
@@ -32,10 +33,14 @@ namespace COmpStoreClient.Controllers
             if (ModelState.IsValid)
             {
                 var token = await _webApiCalls.VerifyAccount(model);
-                if (token != null)
+                if (token != null && token.Role == EnumRole.Admin.ToString())
                 {
                     HttpContext.Session.SetAuthSession(token);
                     return RedirectToAction("Index", "Admin");
+                }
+                else
+                {
+                    ModelState.AddModelError("Password", "Email or Password wrong!");
                 }
             }
             return View(model);

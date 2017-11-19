@@ -13,6 +13,7 @@ using COmpStore.Models.ViewModels.OrderAdmin;
 using COmpStore.Models.ViewModels.ProductAdmin;
 using COmpStore.Models.ViewModels.OrderDetailsAdmin;
 using COmpStore.Models.Enum;
+using COmpStore.Models.ViewModels.Paging;
 
 namespace COmpStore.DAL.Repos
 {
@@ -81,15 +82,20 @@ namespace COmpStore.DAL.Repos
         //        return 0;
         //}
 
-        public IEnumerable<OrderAdminIndex> GetOrderAdminIndex()
-        => Table.Where(o => o.IsDeleted == false).Select(o => new OrderAdminIndex
-        {
-            FullName = o.Customer.FullName,
-            Id = o.Id,
-            OrderDate = o.OrderDate,
-            OrderTotal = o.OrderTotal ?? 0,
-            Status = (EnumOrderStatus)Enum.Parse(typeof(EnumOrderStatus), o.Status)
-        });
+        public PageOutput<OrderAdminIndex> GetOrderAdminIndex(int pageNumber, int pageSize)
+             => new PageOutput<OrderAdminIndex>
+             {
+                 TotalPage = (Table.Count() % pageSize == 0) ? (Table.Count() / pageSize) : (Table.Count() / pageSize + 1),
+                 PageNumber = pageNumber,
+                 Items = Table.Where(o => o.IsDeleted == false).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(o => new OrderAdminIndex
+                 {
+                     FullName = o.Customer.FullName,
+                     Id = o.Id,
+                     OrderDate = o.OrderDate,
+                     OrderTotal = o.OrderTotal ?? 0,
+                     Status = (EnumOrderStatus)Enum.Parse(typeof(EnumOrderStatus), o.Status)
+                 }).ToList()
+             };
 
         internal IEnumerable<OrderDetailsRelate> GetOrderDetails(IEnumerable<OrderDetail> orderDetails)
             => orderDetails.Select(od => new OrderDetailsRelate

@@ -1,0 +1,22 @@
+﻿@using COmpStore.Models.ViewModels.Customer
+@model CustomerModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section id="form" style="margin-top:80px;">
+    <!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1">
+                @Html.Partial("_Login",Model.CustomerLogin)
+            </div>
+            <div class="col-sm-1">
+                <h2 class="or">OR</h2>
+            </div>
+            <div class="col-sm-4">
+               @Html.Partial("_Register", Model.CustomerCreate)
+            </div>
+        </div>
+    </div>
+</section><!--/form-->

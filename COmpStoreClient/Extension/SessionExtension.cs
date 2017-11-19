@@ -13,6 +13,9 @@ namespace COmpStoreClient.Extension
     {
         public static void SetAuthSession(this ISession session, SessionAuth sessionAuth)
         {
+            var data = GetAuthSession(session);
+            if (data != null && data.Token != null)
+                session.Clear();
             session.SetString("auth", JsonConvert.SerializeObject(sessionAuth));
         }
         public static SessionAuth GetAuthSession(this ISession session)
@@ -41,5 +44,7 @@ namespace COmpStoreClient.Extension
 
             return JsonConvert.DeserializeObject<List<SelectedProduct>>(data);
         }
+
+        public static void ClearSelectedProducts(this ISession session) => session.Remove("selectedProducts");
     }
 }

@@ -23,7 +23,7 @@ namespace COmpStore.DAL.Repos.Interfaces
         //IEnumerable<ProductAdminIndex> GetProductAdminIndex();
         string GetImageProduct(int id);
         int UpdateExceptImage(Product model, bool persist = true);
-        PageOutput<ProductAdminIndex> GetProductAdminIndex(int pageNumber = 1, int pageSize = 2);
+        PageOutput<ProductAdminIndex> GetProductAdminIndex(int pageNumber, int pageSize);
         CartModel GetCartView(int id);
         decimal GetProductUnitCostByProductIdAsNoTracking(int productId);
         //======================================================================================================

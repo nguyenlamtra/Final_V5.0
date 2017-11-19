@@ -1,0 +1,12 @@
+﻿@using COmpStore.Models.ViewModels.Customer
+@model CustomerLogin
+<div class="login-form">
+    <!--login form-->
+    <h2>Login to your account</h2>
+    <form asp-action="LoginCustomer" asp-controller="Customer" method="post">
+        <input asp-for="EmailAddress" placeholder="Email" />
+        <input asp-for="Password" type="password" placeholder="Password" />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <button type="submit" class="btn btn-default">Login</button>
+    </form>
+</div><!--/login form-->

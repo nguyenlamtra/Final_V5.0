@@ -91,6 +91,17 @@ namespace COmpStoreApi.Controllers
                 Role = (EnumRole)Enum.Parse(typeof(EnumRole), customer.Role)
             } : null;
         }
+
+        [HttpPost]
+        [ValidateForm]
+        public int CreateAccountForUser([FromBody] CustomerCreate model)
+         => Repo.Add(new Customer
+         {
+             EmailAddress = model.EmailAddress,
+             FullName = model.FullName,
+             Password = StringHelper.EncryptPassword(model.Password),
+             Role = "Customer"
+         });
         //=========================================
     }
 }

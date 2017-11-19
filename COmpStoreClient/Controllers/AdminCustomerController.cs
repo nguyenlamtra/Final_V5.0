@@ -25,6 +25,7 @@ namespace COmpStoreClient.Controllers
             => View(await _webApiCalls.GetAdminCustomerDetails(id));
 
         public IActionResult Create() => View();
+        public IActionResult Error() => View();
 
         [HttpPost]
         public async Task<IActionResult> Create(CustomerAdminCreate model)

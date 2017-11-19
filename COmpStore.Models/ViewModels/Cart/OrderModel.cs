@@ -9,7 +9,6 @@ namespace COmpStore.Models.ViewModels.Cart
     {
         [Required]
         public List<SelectedProduct> SelectedProducts { get; set; }
-        [Required]
         [EmailAddress]
         public string EmailAddress { get; set; }
         [Required(ErrorMessage = "This field is required")]

@@ -19,6 +19,9 @@ using COmpStore.DAL.Repos.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.PlatformAbstractions;
+using System.IO;
 
 namespace COmpStoreApi
 {
@@ -73,13 +76,13 @@ namespace COmpStoreApi
                 jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("a secret that needs to be at least 16 characters long")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is the secret keys of Lam And Tra")),
 
                     ValidateIssuer = true,
-                    ValidIssuer = "your app",
+                    ValidIssuer = "my app",
 
                     ValidateAudience = true,
-                    ValidAudience = "the client of your app",
+                    ValidAudience = "the clients",
 
                     ValidateLifetime = true, //validate the expiration and not before values in the token
 
@@ -93,6 +96,16 @@ namespace COmpStoreApi
                                   policy.RequireClaim(ClaimTypes.Role, "Admin"));
                 options.AddPolicy("User", policy =>
                                   policy.RequireClaim(ClaimTypes.Role, "User"));
+            });
+
+            // Register the Swagger generator, defining one or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Tea & Lam API", Version = "v1" });
+                // Set the comments path for the Swagger JSON and UI.
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "COmpStoreApi.xml");
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddScoped<ICategoryRepo,CategoryRepo>();
@@ -120,6 +133,15 @@ namespace COmpStoreApi
             //        StoreDataInitializer.InitializeData(app.ApplicationServices);
             //    }
             //}
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
             app.UseAuthentication();
             app.UseCors("AllowAll");  // has to go before UseMvc
             app.UseStaticFiles();

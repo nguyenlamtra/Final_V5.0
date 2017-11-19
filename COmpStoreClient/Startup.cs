@@ -13,6 +13,7 @@ using COmpStoreClient.WebServiceAccess.Base;
 using COmpStoreClient.Filters;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
+using COmpStoreClient.Exceptions;
 
 namespace COmpStoreClient
 {
@@ -55,27 +56,25 @@ namespace COmpStoreClient
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                //app.UseExceptionHandler(configure =>
-                //{
-                //    configure.Run(async context =>
-                //    {
-                //        var ex = context.Features
-                //                        .Get<IExceptionHandlerFeature>()
-                //                        .Error;
-                //        var a = ex.GetType();
-                //        if (ex.GetType() == typeof(WebException))
-                //        {
-                //            context.Response.Redirect("/Admin/Login");
-                //        }
-                        
-                //    });
-                //});
                 app.UseDatabaseErrorPage();
+                app.UseExceptionHandler(configure =>
+                {
+                    configure.Run(async context =>
+                    {
+                        var ex = context.Features
+                                        .Get<IExceptionHandlerFeature>()
+                                        .Error;
+                        if (ex.GetType() == typeof(AuthAdminException))
+                            context.Response.Redirect("/Admin/Login");
+                        else
+                            if (ex.GetType() == typeof(AuthCustomerException))
+                                context.Response.Redirect("/Customer/LoginCustomer");
+                            else
+                                context.Response.Redirect("/Customer/Error");
+                    });
+                });
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+
             app.UseSession();
             app.UseStaticFiles();
 
@@ -83,7 +82,7 @@ namespace COmpStoreClient
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Admin}/{action=Login}/{id?}");
+                    template: "{controller=Products}/{action=Index}/{id?}");
             });
         }
     }

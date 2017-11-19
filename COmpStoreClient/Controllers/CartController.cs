@@ -12,6 +12,7 @@ using COmpStore.Models.Entities.ViewModels.Base;
 using COmpStore.Models.ViewModels.Cart;
 using COmpStoreClient.Extension;
 using COmpStoreClient.Exceptions;
+using COmpStoreClient.Filters;
 
 namespace COmpStoreClient.Controllers
 {
@@ -41,6 +42,7 @@ namespace COmpStoreClient.Controllers
             }
         }
 
+        [ValidateCustomer]
         public async Task<IActionResult> ShoppingCart()
         {
             var selectedProducts = HttpContext.Session.GetSelectedProducts();
@@ -53,6 +55,7 @@ namespace COmpStoreClient.Controllers
         }
 
         [HttpPost]
+        [ValidateCustomer]
         public async Task<IActionResult> ShoppingCart(OrderModel orderModel)
         {
             if (ModelState.IsValid)
@@ -63,9 +66,9 @@ namespace COmpStoreClient.Controllers
                 var result = await _webApiCalls.SaveOrder(orderModel);
                 if (result.Equals("1"))
                 {
-                    ViewBag.OrderSuccess = true;
-                    HttpContext.Session.SetAuthSession(null);
-                    return RedirectToAction("Index", "Product");
+                    TempData["OrderSuccess"] = "true";
+                    HttpContext.Session.ClearSelectedProducts();
+                    return RedirectToAction("Index", "Products");
                 }
             }
             var viewModel = await _webApiCalls.GetCartView(orderModel.SelectedProducts.Select(x => x.ProductId).ToArray());

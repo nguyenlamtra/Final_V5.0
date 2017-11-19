@@ -3,6 +3,7 @@
 }
 
 
+
 <div class="jumbotron">
     @if (ViewBag.Featured != true)
     {
@@ -12,16 +13,16 @@
     {
         <a asp-controller="Products" asp-action="Featured" class="btn btn-info " style="text-transform:capitalize"><span class="glyphicon glyphicon-home"></span>&nbsp; Products &raquo;</a>
     }
-    
+
 </div>
 @*<h3>@ViewBag.Header</h3>*@
 @*<div class="row">
-    @for (int x = 0; x < Model.Count; x++)
-    {
-        var item = Model[x];
-        @Html.DisplayFor(model => item)
-    }
-</div>*@
+        @for (int x = 0; x < Model.Count; x++)
+        {
+            var item = Model[x];
+            @Html.DisplayFor(model => item)
+        }
+    </div>*@
 <section>
     <div class="container">
         <div class="row">
@@ -36,7 +37,7 @@
                             <div class="product-image-wrapper">
                                 <div class="single-products">
                                     <div class="productinfo text-center">
-                                        <img src="http://localhost:40001/images/@item.ProductImage" class="img-responsive"  alt="" />
+                                        <img src="http://localhost:40001/images/@item.ProductImage" class="img-responsive" alt="" />
                                         <h2>@item.UnitCost.ToString("#,##0 VNĐ")</h2>
                                         <p>@item.ProductName</p>
                                         <a class="btn btn-default add-to-cart" data-id="@item.Id"><i class="fa fa-shopping-cart"></i>Add to cart</a>
@@ -410,29 +411,15 @@
     </div>
 </section>
 @section Scripts{
-    <script>
-        $(document).ready(function () {
-            $('.add-to-cart').on('click', function () {
-                var id = $(this).data('id');
-                $.ajax({
-                    url: '/Cart/AddToCart',
-                    data: { productId: id },
-                    type: 'post',
-                    success: function (data) {
-                        if (data) {
-                            alert('Success');
-                        } else {
-                            console.log('error')
-                        }
-                    },
-                    error: function () {
-                        console.log('error');
-                    }
-                })
+    <script src="~/js/product-list.js"></script>
+    @if (TempData["OrderSuccess"] as string != null)
+    {
+        <script>
+            $(document).ready(function () {
+                bootbox.alert("Order Success");
             })
-        })
-    </script>
-
+        </script>
+    }
 }
 
 
