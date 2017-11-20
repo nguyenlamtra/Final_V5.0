@@ -20,6 +20,12 @@ namespace COmpStoreClient.Controllers
 
         public IActionResult Error() => View();
 
+        public IActionResult Logout()
+        {
+            HttpContext.Session.ClearAuth();
+            return RedirectToAction("Index", "Products");
+        }
+
         public IActionResult LoginCustomer()
         {
             return View("LoginCustomer", new CustomerModel());

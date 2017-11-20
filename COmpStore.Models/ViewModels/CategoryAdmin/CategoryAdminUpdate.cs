@@ -10,6 +10,7 @@ namespace COmpStore.Models.ViewModels.CategoryAdmin
         [Required(ErrorMessage ="This field is required")]
         public int Id { get; set; }
         [Required(ErrorMessage = "This field is required")]
+        [StringLength(30)]
         public string CategoryName { get; set; }
     }
 }

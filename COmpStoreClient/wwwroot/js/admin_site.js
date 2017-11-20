@@ -1,9 +1,4 @@
-﻿function deleteItem(url)
-{
-    
-}
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
 
     // Set the checkbox is checked when user select a row.
     $('#content_table tbody tr').click(function () {
@@ -36,4 +31,9 @@ $(document).ready(function () {
         $('#btn_delete').addClass('disabled');
         $(this).hide();
     });
+
+
+    $('.only-number').keypress(function () {
+        return event.charCode >= 48 && event.charCode <= 57;
+    })
 });

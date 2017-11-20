@@ -8,6 +8,7 @@ namespace COmpStore.Models.ViewModels.CategoryAdmin
     public class CategoryAdminCreate
     {
         [Required(ErrorMessage = "This field is required")]
+        [StringLength(30)]
         public string CategoryName { get; set; }
     }
 }

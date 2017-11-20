@@ -46,5 +46,7 @@ namespace COmpStoreClient.Extension
         }
 
         public static void ClearSelectedProducts(this ISession session) => session.Remove("selectedProducts");
+
+        public static void ClearAuth(this ISession session) => session.Remove("auth");
     }
 }

@@ -94,9 +94,10 @@
                                 {
                                     <li><a href="/Cart/ShoppingCart" id="shop-cart"><i class="fa fa-shopping-cart"></i> Cart</a></li>
                                 }
-                                @if (auth != null && auth.EmailAddress != null)
+                                @if (auth != null && auth.Role == "Customer")
                                 {
-                                    <li><a style="color:#FE980F;"><i class="fa fa-lock active"></i> @auth.EmailAddress</a></li>
+                                    <li><a style="color:#FE980F;"><i class="glyphicon glyphicon-user"></i> @auth.EmailAddress</a></li>
+                                    <li><a href="/Customer/Logout"><i class="fa fa-lock active"></i> Logout</a></li>
                                 }
                                 else
                                 {
